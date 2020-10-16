@@ -1,10 +1,8 @@
-__version__ = '0.1'
-
 import numpy as np
 import scipy as sp
 
 
-def _get_psd(f, f_low, f_high, variance = 1):
+def get_psd(f, f_low, f_high, variance = 1):
     ''' Returns one-sided flat-shaped power spectral density (PSD). 
 
 
@@ -23,7 +21,6 @@ def _get_psd(f, f_low, f_high, variance = 1):
     PSD_width = f[indx][-1] - f[indx][0]
     PSD[indx] = variance/PSD_width # area under PSD is variance 
     return PSD
-
 
 
 def get_gaussian_signal(PSD, fs, N):
@@ -47,8 +44,8 @@ def get_gaussian_signal(PSD, fs, N):
     
     A = np.sqrt(PSD*N*fs/2)  # amplitude spectra
     M = int(N/2 + 1) # number of data points in frequency vector
-    ϕ = np.random.uniform(-np.pi, np.pi, M) #random phase
-    A_rnd = A*np.exp(1j*ϕ) # amplitude spectra with random phase
+    phi = np.random.uniform(-np.pi, np.pi, M) #random phase
+    A_rnd = A*np.exp(1j*phi) # amplitude spectra with random phase
     random_signal = np.fft.irfft(A_rnd) # random proces as IFFT of amplitude spectra with random phase
     return random_signal
 
@@ -86,7 +83,7 @@ def get_stationary_nongaussian_signal(PSD, fs, N, s_k = 0, k_u = 3, mean = 0, va
     h_3 = s_k/(6*(1 + 6*h_4)) ##parameter h3 [2]
     Κ = 1/np.sqrt(1 + 2*h_3**2 + 6*h_4**2) #parameter K [2]
     σ_x = np.std(x) #standard deviation of gaussian process
-    nongaussian_signal = mean + variance*Κ*(x/σ_x + h_3*(x/σ_x - 1) + h_4*((x/σ_x)**3 - 3*x/σ_x))
+    nongaussian_signal = mean + variance*Κ*(x/σ_x + h_3*(x/σ_x - 1) + h_4*((x/σ_x)**3 - 3*x/σ_x)) #[2]
     return nongaussian_signal
 
 
@@ -291,7 +288,7 @@ def get_nonstationary_signal_beta(PSD, fs, N, delta_n, alpha_list, beta_list, k_
                 stationary_signals_tmp[f'alpha={alpha}, beta={beta}'] = sig_tmp
                 modulation_signals_tmp[f'alpha={alpha}, beta={beta}'] = mod_tmp
                        
-    min_key = min(delta_k_u_dict, key=delta_k_u_dict.get) #celect key with minimal deviation from desired kurtosis
+    min_key = min(delta_k_u_dict, key=delta_k_u_dict.get) #dict key with minimal deviation from desired kurtosis
     
     if not SQ: 
         return nonstationary_signals_tmp[min_key]
