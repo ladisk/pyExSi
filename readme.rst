@@ -16,7 +16,7 @@ A simple example on how to use the code:
 
 .. code-block:: python
 
-i   mport signal_generation as sg
+    import signal_generation as sg
     import numpy as np
 
 
