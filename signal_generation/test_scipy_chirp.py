@@ -1,3 +1,9 @@
+"""
+This is only meant to demonstrate the agreement of our `sweep` implementation with `scipy.signal.chirp`.
+Can be used for unit testing of our sine sweep implementation down the road, but it also shows that the current
+`sweep` function could be reworked to only call `scipy.signal.sweep` with minimal effort.
+"""
+
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy.signal import chirp
