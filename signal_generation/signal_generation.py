@@ -43,7 +43,7 @@ def get_gaussian_signal(PSD, fs, N):
     '''
     
     A = np.sqrt(PSD*N*fs//2)  # amplitude spectra
-    M = int(N//2 + 1) # number of data points in frequency vector
+    M = int(N/2 + 1) # number of data points in frequency vector
     phi = np.random.uniform(-np.pi, np.pi, M) #random phase
     A_rnd = A*np.exp(1j*phi) # amplitude spectra with random phase
     random_signal = np.fft.irfft(A_rnd) # random proces as IFFT of amplitude spectra with random phase
