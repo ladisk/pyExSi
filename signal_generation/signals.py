@@ -145,7 +145,7 @@ def _sweep_rate(T, f_start, f_stop, mode='linear'):
     return sweep_rate
 
 
-def get_stationary_nongaussian_signal(N, PSD, fs, s_k = 0, k_u = 3, mean = 0):
+def stationary_nongaussian_signal(N, PSD, fs, s_k = 0, k_u = 3, mean = 0):
     """
      Stationary non-Gaussian realization of random process. 
     
@@ -224,7 +224,7 @@ def _get_nonstationary_signal_psd(N, PSD, PSD_modulating, fs, delta_m = 1, p = 1
     return nonstationary_signal
 
 
-def get_nonstationary_signal_psd(N, PSD, PSD_modulating, fs, delta_m_list, p_list, k_u = 3):
+def nonstationary_signal_psd(N, PSD, PSD_modulating, fs, delta_m_list, p_list, k_u = 3):
     """
     Non-stationary non-Gaussian realization of random process.
     
