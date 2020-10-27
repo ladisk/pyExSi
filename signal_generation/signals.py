@@ -1,5 +1,7 @@
 import numpy as np
-from scipy.stats import moment, beta
+import copy
+from scipy.stats import moment, beta 
+from scipy.interpolate import CubicSpline
 
 def uniform_random(N):
     """Uniform random distribution
@@ -267,7 +269,7 @@ def _get_nonstationary_signal_beta(N, PSD, fs, delta_n, alpha = 1, beta = 1):
     points_beta = np.random.beta(alpha, beta, n + 1) 
     points_beta[-1] = points_beta[0] # first and last points are the same
 
-    function_beta = sp.interpolate.CubicSpline(t_beta, points_beta, bc_type = 'periodic', extrapolate=None) 
+    function_beta = CubicSpline(t_beta, points_beta, bc_type = 'periodic', extrapolate=None) 
     modulating_signal = function_beta(t) / np.std(function_beta(t)) # unit variance modulating signal 
 
     #shift to non-negative values
@@ -381,13 +383,13 @@ def get_psd(f, f_low, f_high, variance = 1):
     '''
     One-sided flat-shaped power spectral density (PSD). 
 
-    :param f: - frequency vector
+    :param f: frequency vector
     :type f: array
-    :param f_low: - lower frequency of PSD
+    :param f_low: lower frequency of PSD
     :type f_low: float
-    :param f_high: - higher frequency of PSD 
+    :param f_high: higher frequency of PSD 
     :type f_high: float
-    :param variance: - variance of random process, described by PSD
+    :param variance: variance of random process, described by PSD
     :type variance: float
     :returns: one-sided flat-shaped PSD
     '''
@@ -397,12 +399,13 @@ def get_psd(f, f_low, f_high, variance = 1):
     PSD[indx] = variance/PSD_width # area under PSD is variance 
     return PSD
 
+
 def get_kurtosis(signal):
     '''
-    One-sided flat-shaped power spectral density (PSD). 
+    Kurtosis of signal. 
 
-    :param signal: - frequency vector
-    :type f: array
+    :param signal: signal
+    :type signal: array
     :returns: kurtosis
     '''
     μ_2 = moment(signal, 2)
