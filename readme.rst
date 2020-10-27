@@ -1,18 +1,23 @@
 signal_generation.py
 ---------------------------------------------
+-Uniform random distribution
 
-Obtaining random signal, defined by power spectral density (PSD). 
-Following types of random signal are  obtainable:
-- stationary Gaussian random process
-- stationary non-Gaussian random process
-- non-stationary non-Gaussian random process.
+-Normal random distribution
+
+-Pseudorandom distribution
+
+-Zero-mean burst random
+
+-Sweep
+
+-Random signals, defined by power spectral density (PSD):stationary Gaussian, stationary non-Gaussian and non-stationary non-Gaussian random process
 
 
 
 Simple example
 ---------------
 
-A simple example on how to use the code:
+A simple example on how to generate random signals on PSD basis:
 
 .. code-block:: python
 
@@ -25,7 +30,7 @@ A simple example on how to use the code:
     t = np.arange(0,N)/fs # time vector
 
     # define frequency vector and one-sided flat-shaped PSD
-    M = int(N/2 + 1) # number of data points of frequency vector
+    M = N//2 + 1 # number of data points of frequency vector
     f = np.arange(0, M, 1) * fs / N # frequency vector
     f_min = 50 # PSD upper frequency limit  [Hz]
     f_max = 100 # PSD lower frequency limit [Hz]
@@ -41,4 +46,4 @@ A simple example on how to use the code:
     delta_m_list = np.arange(.1,2.1,.5) 
     p_list = np.arange(.1,2.1,.5)
     #get signal 
-    nongausian_nonsttaionary_signal_psd = sg.get_nonstationary_signal_psd(PSD,PSD_modulating,fs,N,delta_m_list,p_list, k_u=10, variance=10)
+    nongausian_nonsttaionary_signal_psd = nonstationary_signal(N,PSD,fs,k_u=5,modulating_signal=('PSD', PSD_modulating),param1_list=p_list,param2_list=delta_m_list)
