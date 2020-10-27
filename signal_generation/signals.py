@@ -375,3 +375,37 @@ def nonstationary_signal(N, PSD, fs, k_u = 3, modulating_signal = ('PSD', None),
         return nonstationary_signals_tmp[min_key]
     else: 
         return stationary_signals_tmp[min_key], modulation_signals_tmp[min_key]
+
+
+def get_psd(f, f_low, f_high, variance = 1):
+    '''
+    One-sided flat-shaped power spectral density (PSD). 
+
+    :param f: - frequency vector
+    :type f: array
+    :param f_low: - lower frequency of PSD
+    :type f_low: float
+    :param f_high: - higher frequency of PSD 
+    :type f_high: float
+    :param variance: - variance of random process, described by PSD
+    :type variance: float
+    :returns: one-sided flat-shaped PSD
+    '''
+    PSD = np.zeros(len(f)) 
+    indx = np.logical_and(f>=f_low, f<=f_high) 
+    PSD_width = f[indx][-1] - f[indx][0]
+    PSD[indx] = variance/PSD_width # area under PSD is variance 
+    return PSD
+
+def get_kurtosis(signal):
+    '''
+    One-sided flat-shaped power spectral density (PSD). 
+
+    :param signal: - frequency vector
+    :type f: array
+    :returns: kurtosis
+    '''
+    μ_2 = moment(signal, 2)
+    μ_4 = moment(signal, 4)
+    k_u = μ_4/μ_2**2
+    return k_u
