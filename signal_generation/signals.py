@@ -1,10 +1,11 @@
 import numpy as np
-import copy
 from scipy.stats import moment, beta 
 from scipy.interpolate import CubicSpline
 
+
 def uniform_random(N):
-    """Uniform random distribution
+    """
+    Uniform random distribution
     
     :param N: Number of points.
     :type N: int
@@ -12,8 +13,10 @@ def uniform_random(N):
     burst = np.random.rand(N) - 0.5
     return burst / np.max(np.abs(burst))
 
+
 def normal_random(N):
-    """Normal random distribution.
+    """
+    Normal random distribution.
     
     :param N: Number of points.
     :type N: int
@@ -21,8 +24,10 @@ def normal_random(N):
     burst = np.random.randn(N)
     return burst / np.max(np.abs(burst))
 
+
 def pseudo_random(N):
-    """Pseudorandom distribution.
+    """
+    Pseudorandom distribution.
 
     Magnitudes are 1, phase is random.
     
@@ -36,7 +41,8 @@ def pseudo_random(N):
 
 
 def random_gaussian(N, PSD, fs):
-    """Stationary Gaussian realization of random process, characterized by PSD. 
+    """
+    Stationary Gaussian realization of random process, characterized by PSD. 
     
     Random process is obtained with IFFT of amplitude spectra with random phase [1]. Area under PSD curve represents variance of random process.
     
@@ -45,19 +51,95 @@ def random_gaussian(N, PSD, fs):
     :param PSD: one-sided power spectral density [unit^2].
     :type PSD: array
     :param fs: sampling frequency [Hz].
-    :type fs: (int,float)
+    :type fs: int,float
     :returns: stationary Gaussian realization of random process
 
     References
     ----------
     [1] D. E. Newland. An Introduction to Random Vibrations, Spectral & Wavelet Analysis. Dover Publications,
         2005
-    """
 
+    Example
+    --------
+    >>> import numy as np
+    >>> import matplotlib.pyplot as plt
+    >>> import signal_generation as sg
+
+    >>> N = 1000 # number of data points of time signal
+    >>> fs = 100 # sampling frequency [Hz]
+    >>> t = np.arange(0,N)/fs # time vector
+    >>> M = N // 2 + 1 # number of data points of frequency vector
+    >>> f = np.arange(0, M, 1) * fs / N # frequency vector
+    >>> f_min = 10 # PSD upper frequency limit  [Hz]
+    >>> f_max = 20 # PSD lower frequency limit [Hz]
+
+    >>> PSD = sg.get_psd(f, f_min, f_max) # one-sided flat-shaped PSD
+    >>> x = sg.random_gaussian(N, PSD, fs) 
+    >>> plt.plot(t,x)
+    >>> plt.xlabel(t [s])
+    >>> plt.ylabel(x [unit])
+    >>> plt.show()
+    """
     ampl_spectra = np.sqrt(PSD * N * fs / 2)  # amplitude spectra    
     ampl_spectra_random = ampl_spectra * np.exp(1j * np.random.rand(len(PSD)) * 2 * np.pi) #amplitude spectra, random phase
     burst = np.fft.irfft(ampl_spectra_random) # time signal
     return burst
+
+
+def impact_pulse(N, n_start, length, amplitude = 1., shape = 'half-sine'):
+    """
+    Impact pulse.
+
+    :param N: number of points in time signal.
+    :type N: int
+    :param length: length of pulse.
+    :type length: int
+    :param amplitude: amplitude of pulse.
+    :type amplitude: float
+    :param shape: shape of impact pulse. 'rectangular', 'triangular', 'sawtooth ' or 'half-sine'. Defaults to 'half-sine'.
+    :type shape: string
+    :returns: impact pulse.
+
+    Example
+    --------
+    >>> import numy as np
+    >>> import matplotlib.pyplot as plt
+    >>> import signal_generation as sg
+
+    >>> N = 1000
+    >>> n_start = 90
+    >>> amplitude = 3
+    >>> x_1 = sg.impact_pulse(N=N, n_start=n_start, length=length, amplitude=amplitude)
+    >>> x_2 = sg.impact_pulse(N=N, n_start=n_start, length=length, amplitude=amplitude, shape='triangular')
+
+    >>> t = np.linspace(0,10,N)
+    >>> plt.plot(t,x_1, label='half-sine')
+    >>> plt.plot(t,x_2, label='triangular')
+    >>> plt.show()
+    """
+    if not isinstance(n_start, int) or not isinstance(length, int) or not isinstance(N, int):
+        raise ValueError("'N', 'n_start' and 'length' must be integers!")
+
+    if  N < n_start + length:
+        raise ValueError("'N' must be bigger or equal than 'n_start'+'length'!")
+
+    pulse = np.zeros(N-n_start)
+
+    if shape == 'rectangular':
+        pulse[:length] = amplitude
+    elif shape == 'triangular':
+        pulse[:length//2] = np.linspace(0, amplitude, length//2)
+        pulse[length//2:length] = np.linspace(amplitude, 0, length//2)
+    elif shape == 'sawtooth':
+        pulse[:length] = np.linspace(0, amplitude, length)
+    elif shape == 'half-sine':
+        pulse[:length] = amplitude * np.sin(np.linspace(0,np.pi,length))
+    else:
+        raise ValueError("Set `shape` either to 'rectangular', 'triangular', 'sawtooth ' or 'half-sine'.")
+
+    pulse = np.pad(pulse, (n_start,0), mode='constant', constant_values=(0, 0)) 
+
+    return pulse
 
 
 def burst_random(N, A=1., ratio=0.5, distribution='uniform', n_bursts=1, periodic_bursts=True):
@@ -174,6 +256,29 @@ def stationary_nongaussian_signal(N, PSD, fs, s_k = 0, k_u = 3, mean = 0):
     [2] Steven R. Winterstein. Nonlinear vibration models for extremes and fatigue. ASCE Journal of Engineering
         Mechanics, 114:1772–1790, 1988.
 
+    Example
+    --------
+    >>> import numy as np
+    >>> import matplotlib.pyplot as plt
+    >>> import signal_generation as sg
+
+    >>> N = 1000 # number of data points of time signal
+    >>> fs = 100 # sampling frequency [Hz]
+    >>> t = np.arange(0,N)/fs # time vector
+    >>> M = N // 2 + 1 # number of data points of frequency vector
+    >>> f = np.arange(0, M, 1) * fs / N # frequency vector
+    >>> f_min = 10 # PSD upper frequency limit  [Hz]
+    >>> f_max = 20 # PSD lower frequency limit [Hz]
+
+    >>> PSD = sg.get_psd(f, f_min, f_max) # one-sided flat-shaped PSD
+    >>> x_gauss = sg.random_gaussian(N, PSD, fs) 
+    >>> x_ngauss = sg.stationary_nongaussian_signal(N, PSD, fs, k_u = 5) 
+    >>> plt.plot(t, x_gauss, label='gaussian')
+    >>> plt.plot(t, x_ngauss, label='non-gaussian')
+    >>> plt.xlabel(t [s])
+    >>> plt.ylabel(x [unit])
+    >>> plt.legend()
+    >>> plt.show()
     """
     x = random_gaussian(N, PSD, fs) #gaussian random process
 
@@ -263,7 +368,7 @@ def _get_nonstationary_signal_beta(N, PSD, fs, delta_n, alpha = 1, beta = 1):
         delta_n = delta_n + 1
 
     t = np.arange(0, N) / fs # time vector
-    t_beta = copy.deepcopy(t[::delta_n]) # time vector for modulating signal, with step delta_n
+    t_beta = np.copy(t[::delta_n]) # time vector for modulating signal, with step delta_n
     t_beta[-1] = t[-1] # last data point in both time vectors are the same
     n = N//delta_n # number of data points for beta distribution
     points_beta = np.random.beta(alpha, beta, n + 1) 
@@ -324,6 +429,57 @@ def nonstationary_signal(N, PSD, fs, k_u = 3, modulating_signal = ('PSD', None),
         random vibration loading. Procedia Structural Integrity, 17:379—-386, 2019.
     [4] Lorenzo Capponi, Martin Česnik, Janko Slavič, Filippo Cianetti, and Miha Boltežar.  Non-stationarity index in 
         vibration fatigue: Theoretical and ex-perimental research.International Journal of Fatigue, 104:221–230, 2017.
+        
+    Example
+    --------
+    >>> import numy as np
+    >>> import matplotlib.pyplot as plt
+    >>> import signal_generation as sg
+
+    >>> N = 1000 # number of data points of time signal
+    >>> fs = 100 # sampling frequency [Hz]
+    >>> t = np.arange(0,N)/fs # time vector
+    >>> M = N // 2 + 1 # number of data points of frequency vector
+    >>> f = np.arange(0, M, 1) * fs / N # frequency vector
+    >>> f_min = 10 # signals's PSD upper frequency limit  [Hz]
+    >>> f_max = 20 # signals' PSD lower frequency limit [Hz]
+    >>> f_min_mod = 1 # modulating signals's PSD upper frequency limit  [Hz]
+    >>> f_max_mod = 2 # modulating signals's PSD lower frequency limit [Hz]
+
+    #PSD of stationary signal
+    >>> PSD = sg.get_psd(f, f_low = f_min, f_high = f_max) # one-sided flat-shaped PSD
+    #PSD of modulating signal
+    >>> PSD_modu = sg.get_psd(f, f_low = f_min_mod, f_high = f_max_mod) # one-sided flat-shaped PSD
+    >>> k_u = 5
+    #
+    >>> x_nonstationary_1 = sg.nonstationary_signal(N,PSD,fs,k_u=k_u,modulating_signal=('PSD',PSD_modulating))
+
+    #calculate kurtosis 
+    >>> k_u_1 = sg.get_kurtosis(x_nonstationary_1)
+    >>> print(f'desired kurtosis :{k_u:.3f}', actual kurtosis :{k_u_1:.3f}')
+
+    #amplitude modulation parameters array with finer division
+    >>> delta_m_list = np.arange(.1,2.1,.1) 
+    >>> p_list = np.arange(.1,2.1,.1)
+    >>> x_nonstationary_2 = sg.nonstationary_signal(N,PSD,fs,k_u=k_u,modulating_signal=('PSD',PSD_modulating),
+                                                    param1_list=delta_m_list,param2_list=p_list)
+    >>> k_u_2 = sg.get_kurtosis(x_nonstationary_2)
+    >>> print(f'desired kurtosis :{k_u:.3f}', actual kurtosis :{k_u_2:.3f}')
+
+    #define array of parameters alpha and beta
+    >>> alpha_list = np.arange(1,7,1)
+    >>> beta_list = np.arange(1,7,1)
+    >>> x_nonstationary_3 = sg.nonstationary_signal(N,PSD,fs,k_u=10,modulating_signal=('CSI',delta_n),
+                                                        param1_list=alpha_list,param2_list=beta_list)
+    >>> k_u_3 = sg.get_kurtosis(x_nonstationary_3)
+    >>> print(f'desired kurtosis :{k_u:.3f}', actual kurtosis :{k_u_3:.3f}')
+
+    >>> plt.plot(t, x_nonstationary_2, label='PSD')
+    >>> plt.plot(t, x_nonstationary_3, label='CSI)
+    >>> plt.xlabel(t [s])
+    >>> plt.ylabel(x [unit])
+    >>> plt.legend()
+    >>> plt.show()
     """
     #read type and parameter of modulating signal
     mod_signal_type, mod_sig_parameter = modulating_signal
@@ -383,15 +539,35 @@ def get_psd(f, f_low, f_high, variance = 1):
     '''
     One-sided flat-shaped power spectral density (PSD). 
 
-    :param f: frequency vector
+    :param f: frequency vector [Hz]
     :type f: array
-    :param f_low: lower frequency of PSD
+    :param f_low: lower frequency of PSD [Hz]
     :type f_low: float
-    :param f_high: higher frequency of PSD 
+    :param f_high: higher frequency of PSD [Hz]
     :type f_high: float
-    :param variance: variance of random process, described by PSD
+    :param variance: variance of random process, described by PSD [unit^2]
     :type variance: float
-    :returns: one-sided flat-shaped PSD
+    :returns: one-sided flat-shaped PSD [unit^2/Hz]
+
+    Example
+    --------
+    >>> import numy as np
+    >>> import matplotlib.pyplot as plt
+    >>> import signal_generation as sg
+
+    >>> N = 1000 # number of data points of time signal
+    >>> fs = 100 # sampling frequency [Hz]
+    >>> t = np.arange(0,N)/fs # time vector
+    >>> M = N // 2 + 1 # number of data points of frequency vector
+    >>> f = np.arange(0, M, 1) * fs / N # frequency vector
+    >>> f_min = 10 # PSD upper frequency limit  [Hz]
+    >>> f_max = 20 # PSD lower frequency limit [Hz]
+
+    >>> PSD = sg.get_psd(f, f_min, f_max) # one-sided flat-shaped PSD
+    >>> plt.plot(f,PSD)
+    >>> plt.xlabel(f [Hz])
+    >>> plt.ylabel(PSD [unit^2/Hz])
+    >>> plt.show()
     '''
     PSD = np.zeros(len(f)) 
     indx = np.logical_and(f>=f_low, f<=f_high) 
