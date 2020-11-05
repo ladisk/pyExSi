@@ -1,7 +1,7 @@
 import numpy as np
 from scipy.stats import moment, beta 
 from scipy.interpolate import CubicSpline
-
+from scipy import signal
 
 def uniform_random(N):
     """
@@ -85,8 +85,7 @@ def random_gaussian(N, PSD, fs):
     burst = np.fft.irfft(ampl_spectra_random) # time signal
     return burst
 
-
-def impact_pulse(N, n_start, length, amplitude = 1., shape = 'half-sine'):
+def impact_pulse(N, n_start, length, amplitude = 1., window = 'half-sine'):
     """
     Impact pulse.
 
@@ -96,8 +95,8 @@ def impact_pulse(N, n_start, length, amplitude = 1., shape = 'half-sine'):
     :type length: int
     :param amplitude: amplitude of pulse.
     :type amplitude: float
-    :param shape: shape of impact pulse. 'rectangular', 'triangular', 'sawtooth ' or 'half-sine'. Defaults to 'half-sine'.
-    :type shape: string
+    :param window:  The type of window to create. See scipy.signal.windows for more details.
+    :type window: string, float, or tuple
     :returns: impact pulse.
 
     Example
@@ -119,25 +118,19 @@ def impact_pulse(N, n_start, length, amplitude = 1., shape = 'half-sine'):
     """
     if not isinstance(n_start, int) or not isinstance(length, int) or not isinstance(N, int):
         raise ValueError("'N', 'n_start' and 'length' must be integers!")
-
+    
     if  N < n_start + length:
         raise ValueError("'N' must be bigger or equal than 'n_start'+'length'!")
 
     pulse = np.zeros(N-n_start)
 
-    if shape == 'rectangular':
-        pulse[:length] = amplitude
-    elif shape == 'triangular':
-        pulse[:length//2] = np.linspace(0, amplitude, length//2)
-        pulse[length//2:length] = np.linspace(amplitude, 0, length//2)
-    elif shape == 'sawtooth':
+    if window != 'sawtooth':
+        window_pulse = signal.windows.get_window(window, length)
+        pulse[:length] = amplitude * window_pulse
+    else: # until added to scipy.signal.windows module
         pulse[:length] = np.linspace(0, amplitude, length)
-    elif shape == 'half-sine':
-        pulse[:length] = amplitude * np.sin(np.linspace(0,np.pi,length))
-    else:
-        raise ValueError("Set `shape` either to 'rectangular', 'triangular', 'sawtooth ' or 'half-sine'.")
 
-    pulse = np.pad(pulse, (n_start,0), mode='constant', constant_values=(0, 0)) 
+    pulse = np.pad(pulse, (n_start,0), mode='constant', constant_values=(0, 0))
 
     return pulse
 
@@ -511,7 +504,7 @@ def nonstationary_signal(N, PSD, fs, k_u = 3, modulating_signal = ('PSD', None),
 
     for param1 in param1_list:     # p/alpha
         for param2 in param2_list:   # delta_m/beta
-            
+
             if mod_signal_type == 'PSD':
                 am_sig_tmp, sig_tmp, mod_tmp = _get_nonstationary_signal_psd(N, PSD, fs, 
                                                                              mod_sig_parameter, p = param1, delta_m = param2)
