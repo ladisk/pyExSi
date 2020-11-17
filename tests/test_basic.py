@@ -16,7 +16,7 @@ def test_version():
 
 def test_data():
 
-    with open('./test/test_data.pkl','rb') as the_file:
+    with open('./tests/test_data.pkl','rb') as the_file:
         test_data = pickle.load(the_file)
 
     results_ref = {
