@@ -4,12 +4,15 @@ from scipy.interpolate import CubicSpline
 from scipy import signal
 
 
-def uniform_random(N):
+def uniform_random(N, rg = None):
     """
     Uniform random distribution
     
     :param N: Number of points.
     :type N: int
+    :param rg: Initialized Generator object
+    :type rg: numpy.random._generator.Generator
+    :returns: Random samples from a “uniform” distribution
 
     Example
     --------
@@ -22,16 +25,25 @@ def uniform_random(N):
     >>> plt.plot(x)
     >>> plt.show()
     """
-    burst = np.random.rand(N) - 0.5
+    if rg == None:
+        rg = np.random.default_rng()
+    if isinstance(rg, np.random._generator.Generator):
+        burst = rg.uniform(size = N) - 0.5
+    else:
+        raise ValueError("rg' must be initialized Generator object (numpy.random._generator.Generator)!")
+
     return burst / np.max(np.abs(burst))
 
 
-def normal_random(N):
+def normal_random(N, rg = None):
     """
     Normal random distribution.
     
     :param N: Number of points.
     :type N: int
+    :param rg: Initialized Generator object
+    :type rg: numpy.random._generator.Generator
+    :returns: Random samples from the “standard normal” distribution 
 
     Example
     --------
@@ -44,11 +56,17 @@ def normal_random(N):
     >>> plt.plot(x)
     >>> plt.show()
     """
-    burst = np.random.randn(N)
+    if rg == None:
+        rg = np.random.default_rng()
+    if isinstance(rg, np.random._generator.Generator):
+        burst = rg.standard_normal(size = N)
+    else:
+        raise ValueError("rg' must be initialized Generator object (numpy.random._generator.Generator)!")   
+
     return burst / np.max(np.abs(burst))
 
 
-def pseudo_random(N):
+def pseudo_random(N, rg = None):
     """
     Pseudorandom distribution.
 
@@ -56,6 +74,9 @@ def pseudo_random(N):
     
     :param N: Number of points.
     :type N: int
+    :param rg: Initialized Generator object
+    :type rg: numpy.random._generator.Generator
+    :returns: Random samples from the “standard normal” distribution 
 
     Example
     --------
@@ -69,12 +90,19 @@ def pseudo_random(N):
     >>> plt.show()
     """
     R = np.ones(N//2+1,complex)
-    R_prand = R * np.exp(1j*np.random.rand(len(R))*2*np.pi)
+
+    if rg == None:
+        rg = np.random.default_rng()
+    if isinstance(rg, np.random._generator.Generator):
+        R_prand = R * np.exp(1j*rg.uniform(size = len(R))*2*np.pi)
+    else:
+        raise ValueError("rg' must be initialized Generator object (numpy.random._generator.Generator)!")
+
     burst = np.fft.irfft(R_prand)
     return burst / np.max(np.abs(burst))
 
 
-def burst_random(N, A=1., ratio=0.5, distribution='uniform', n_bursts=1, periodic_bursts=True):
+def burst_random(N, A=1., ratio=0.5, distribution='uniform', n_bursts=1, periodic_bursts=True, rg=None):
     """
     Generate a zero-mean burst random excitation signal time series.
     
@@ -88,6 +116,8 @@ def burst_random(N, A=1., ratio=0.5, distribution='uniform', n_bursts=1, periodi
     :param periodic_bursts: If True, bursts are periodically repeated `n_bursts` times, 
         otherwise a uniquely random burst is generated for each repetition. 
         Defaults to True.
+    :param rg: Initialized Generator object
+    :type rg: numpy.random._generator.Generator
     :returns: Burst random signal time series.
 
     Example
@@ -114,11 +144,11 @@ def burst_random(N, A=1., ratio=0.5, distribution='uniform', n_bursts=1, periodi
         
     for _ in range(n):
         if distribution == 'uniform':
-            br = uniform_random(N) * A
+            br = uniform_random(N, rg = rg) * A
         elif distribution == 'normal':
-            br = normal_random(N) * A
+            br = normal_random(N, rg = rg) * A
         elif distribution == 'pseudorandom':
-            br = pseudo_random(N) * A
+            br = pseudo_random(N, rg = rg) * A
         else:
             raise ValueError("Set `ditribution` either to 'normal', 'uniform' or 'periodic'.")
 
@@ -219,7 +249,7 @@ def impact_pulse(N, n_start, width, amplitude = 1., window = 'cosine'):
         raise ValueError("'N', 'n_start' and 'width' must be integers!")
     
     if  N < n_start + width:
-        raise ValueError("'N' must be bigger or equal than 'n_start'+'length'!")
+        raise ValueError("'N' must be bigger than or equal to 'n_start'+'length'!")
 
     pulse = np.zeros(N-n_start)
 
@@ -275,7 +305,7 @@ def get_psd(f, f_low, f_high, variance = 1):
     return PSD
 
 
-def random_gaussian(N, PSD, fs, rng = None):
+def random_gaussian(N, PSD, fs, rg = None):
     """
     Stationary Gaussian realization of random process, characterized by PSD. 
     
@@ -287,6 +317,8 @@ def random_gaussian(N, PSD, fs, rng = None):
     :type PSD: array
     :param fs: sampling frequency [Hz].
     :type fs: int,float
+    :param rg: Initialized Generator object
+    :type rg: numpy.random._generator.Generator
     :returns: stationary Gaussian realization of random process
 
     References
@@ -317,18 +349,18 @@ def random_gaussian(N, PSD, fs, rng = None):
     """
     ampl_spectra = np.sqrt(PSD * N * fs / 2)  # amplitude spectra    
 
-    if rng == None:
-        ampl_spectra_random = ampl_spectra * np.exp(1j * np.random.rand(len(PSD)) * 2 * np.pi) #amplitude spectra, random phase
-    elif isinstance(rng, np.random._generator.Generator):
-        ampl_spectra_random = ampl_spectra * np.exp(1j * rng.uniform(0, 1, len(PSD)) *  2 * np.pi) #amplitude spectra, random phase
+    if rg == None:
+        rg = np.random.default_rng()
+    if isinstance(rg, np.random._generator.Generator):
+        ampl_spectra_random = ampl_spectra * np.exp(1j * rg.uniform(0, 1, len(PSD)) *  2 * np.pi) #amplitude spectra, random phase 
     else:
-        raise ValueError("If specified, 'rng' must be initialized generator object (numpy.random.default_rng)!")
+        raise ValueError("rg' must be initialized Generator object (numpy.random._generator.Generator)!")
 
     burst = np.fft.irfft(ampl_spectra_random) # time signal
     return burst
 
 
-def stationary_nongaussian_signal(N, PSD, fs, s_k = 0, k_u = 3, mean = 0, rng = None):
+def stationary_nongaussian_signal(N, PSD, fs, s_k = 0, k_u = 3, mean = 0, rg = None):
     """
     Stationary non-Gaussian realization of random process. 
     
@@ -346,6 +378,8 @@ def stationary_nongaussian_signal(N, PSD, fs, s_k = 0, k_u = 3, mean = 0, rng = 
     :type k_u: int, float
     :param mean: mean value of returned signal
     :type mean: int, float
+    :param rg: Initialized Generator object
+    :type rg: numpy.random._generator.Generator
     :returns: stationary non-Gaussian realization of random process.
 
     References
@@ -379,7 +413,7 @@ def stationary_nongaussian_signal(N, PSD, fs, s_k = 0, k_u = 3, mean = 0, rng = 
     >>> plt.legend()
     >>> plt.show()
     """
-    x = random_gaussian(N, PSD, fs, rng = rng) #gaussian random process
+    x = random_gaussian(N, PSD, fs, rg = rg) #gaussian random process
 
     h_4 = (np.sqrt(1 + 1.5*(k_u -3)) - 1)/18 #parameter h4 [2]
     h_3 = s_k/(6*(1 + 6*h_4)) ##parameter h3 [2]
@@ -390,7 +424,7 @@ def stationary_nongaussian_signal(N, PSD, fs, s_k = 0, k_u = 3, mean = 0, rng = 
     return nongaussian_signal
 
 
-def _get_nonstationary_signal_psd(N, PSD, fs, PSD_modulating, p = 1, delta_m = 1, rng = None):
+def _get_nonstationary_signal_psd(N, PSD, fs, PSD_modulating, p = 1, delta_m = 1, rg = None):
     """
     Non-stationary non-Gaussian realization of random process.
 
@@ -410,6 +444,8 @@ def _get_nonstationary_signal_psd(N, PSD, fs, PSD_modulating, p = 1, delta_m = 1
     :type p: int, float
     :param delta_m: offset 
     :type delta_m: int, float
+    :param rg: Initialized Generator object
+    :type rg: numpy.random._generator.Generator
     :returns: nonstationary, stationary and modulating_signal
 
     References
@@ -423,8 +459,8 @@ def _get_nonstationary_signal_psd(N, PSD, fs, PSD_modulating, p = 1, delta_m = 1
         random vibration loading. Procedia Structural Integrity, 17:379—-386, 2019.
 
     """
-    stationary_signal = random_gaussian(N, PSD, fs, rng = rng) # gaussian random process, carrier
-    modulating_signal = random_gaussian(N, PSD_modulating, fs, rng = rng) # gaussian random process,  modulating signal
+    stationary_signal = random_gaussian(N, PSD, fs, rg = rg) # gaussian random process, carrier
+    modulating_signal = random_gaussian(N, PSD_modulating, fs, rg = rg) # gaussian random process,  modulating signal
     
     nonstationary_signal = stationary_signal*(np.abs(modulating_signal)**p + delta_m) # [3]
     nonstationary_signal = nonstationary_signal/np.std(nonstationary_signal) # non-stationary signal 
@@ -432,7 +468,7 @@ def _get_nonstationary_signal_psd(N, PSD, fs, PSD_modulating, p = 1, delta_m = 1
     return nonstationary_signal, stationary_signal, modulating_signal
 
 
-def _get_nonstationary_signal_beta(N, PSD, fs, delta_n, alpha = 1, beta = 1, rng = None):
+def _get_nonstationary_signal_beta(N, PSD, fs, delta_n, alpha = 1, beta = 1, rg = None):
     ''' 
     Non-stationary non-Gaussian realization of random process.
 
@@ -453,6 +489,8 @@ def _get_nonstationary_signal_beta(N, PSD, fs, delta_n, alpha = 1, beta = 1, rng
     :type alpha: float
     :param beta: Parameter of beta distribution 
     :type beta: float
+    :param rg: Initialized Generator object
+    :type rg: numpy.random._generator.Generator
     :returns: nonstationary, stationary and modulating_signal
     
     References
@@ -463,6 +501,8 @@ def _get_nonstationary_signal_beta(N, PSD, fs, delta_n, alpha = 1, beta = 1, rng
     [2] D. E. Newland. An Introduction to Random Vibrations, Spectral & Wavelet Analysis. Dover Publications,
         2005
     '''
+    stationary_signal = random_gaussian(N, PSD, fs, rg = rg) # gaussian random process
+
     if (delta_n & (delta_n-1) == 0) and delta_n != 0 : # if step is power of 2
         delta_n = delta_n + 1
 
@@ -471,12 +511,12 @@ def _get_nonstationary_signal_beta(N, PSD, fs, delta_n, alpha = 1, beta = 1, rng
     t_beta[-1] = t[-1] # last data point in both time vectors are the same
     n = N//delta_n # number of data points for beta distribution
 
-    if rng == None:
-        points_beta = np.random.beta(alpha, beta, n + 1) 
-    elif isinstance(rng, np.random._generator.Generator):
-        points_beta = rng.beta(alpha, beta, n + 1) 
+    if rg == None:
+        rg = np.random.default_rng()
+    if isinstance(rg, np.random._generator.Generator):
+        points_beta = rg.beta(alpha, beta, n + 1) 
     else:
-        raise ValueError("If specified, 'rng' must be initialized generator object (numpy.random.default_rng)!")
+        raise ValueError("rg' must be initialized Generator object (numpy.random._generator.Generator)!")
 
     points_beta[-1] = points_beta[0] # first and last points are the same
 
@@ -487,7 +527,7 @@ def _get_nonstationary_signal_beta(N, PSD, fs, delta_n, alpha = 1, beta = 1, rng
     if np.min(modulating_signal) < 0:
         modulating_signal += np.abs(np.min(modulating_signal))
 
-    stationary_signal = random_gaussian(N, PSD, fs, rng = rng) # gaussian random process
+
     nonstationary_signal = stationary_signal * modulating_signal #non-stationary signal
     nonstationary_signal /= np.std(nonstationary_signal) # unit variance
     
@@ -507,11 +547,11 @@ def nonstationary_signal(N, PSD, fs, k_u = 3, modulating_signal = ('PSD', None),
     and param2_list (for 'PSD' p and delta_m are needed, for 'CSI' alpha and beta are needed).
     
     :param N: Number of data points in returned signal
-    :type N: (int, float)
+    :type N: {int, float}
     :param PSD: One-sided power spectral density of carrier signal
     :type PSD: array
     :param fs: Sampling period
-    :type fs: (int, float)
+    :type fs: {int, float}
     :param k_u: Desired kurtosis value of returned signal. Defaults to 3 (Gaussian random process).
     :type k_u: float
     :param modulating_signal: Delects type of modulating signal and provides needed parameter.
@@ -520,9 +560,11 @@ def nonstationary_signal(N, PSD, fs, k_u = 3, modulating_signal = ('PSD', None),
     :type param1_list: list of floats
     :param param2_list: List of second parameter for modulating signal generation. Contains parameters delta_m or beta
     :type param2_list: list of floats
-    :param SQ: If squeezing of signal [4] is required, set 'True'. Defaults to 'False'.
+    :param seed: A seed to initialize the BitGenerator. For details, see numpy.random.default_rng()
+    :type seed: {None, int, array_like[ints], SeedSequence, BitGenerator, Generator}, optional
+    :param SQ: If squeezing of signal [4] is required, set 'True'. Defaults to 'False'
     :type SQ: boolean
-    :returns: nonstationary, stationary and modulating_signal
+    :returns: nonstationary signal. Optionally, stationary and modulating_signal are returned as well.
 
     References
     ----------
@@ -613,18 +655,18 @@ def nonstationary_signal(N, PSD, fs, k_u = 3, modulating_signal = ('PSD', None),
     for param1 in param1_list:     # p/alpha
         for param2 in param2_list:   # delta_m/beta
             if seed == None:
-                rng = None
+                rg = None
             elif isinstance(seed,int):
-                rng = np.random.default_rng(seed)
+                rg = np.random.default_rng(seed)
             else:
-                raise ValueError("If specified, 'seed' must integer!")
+                raise ValueError("'seed' must be of type {None, int, array_like[ints], SeedSequence, BitGenerator, Generator}!")
 
             if mod_signal_type == 'PSD':
                 am_sig_tmp, sig_tmp, mod_tmp = _get_nonstationary_signal_psd(N, PSD, fs, 
-                                                                             mod_sig_parameter, p = param1, delta_m = param2, rng  = rng )
+                                                                             mod_sig_parameter, p = param1, delta_m = param2, rg  = rg )
             elif mod_signal_type == 'CSI':
                 am_sig_tmp, sig_tmp, mod_tmp = _get_nonstationary_signal_beta(N, PSD, fs, 
-                                                                              mod_sig_parameter, alpha = param1, beta = param2, rng = rng)
+                                                                              mod_sig_parameter, alpha = param1, beta = param2, rg = rg)
             else:
                 raise ValueError('Valid options for `mod_signal_type` are `PSD` and `CSI` ')
 
