@@ -28,8 +28,7 @@ plt.show()
 
 #Random Generator seed
 seed = 1234
-BitGenerator = np.random.PCG64(seed) #Permuted Congruential Generator 64-bit
-rg = np.random.Generator(BitGenerator) #or rng = np.random.default_rng(seed) 
+rg = np.random.default_rng(seed) #or rng = np.random.default_rng(seed) 
 
 #get gaussian stationary signal
 gaussian_signal = sg.random_gaussian(N, PSD, fs, rg=rg)
@@ -65,7 +64,7 @@ k_u_nonstationary_nongaussian_psd = sg.get_kurtosis(nongaussian_nonstationary_si
 
 #b) amplitude modulation, modulating signal defined by cubis spline intepolation. Points are based on beta distribution
 #Points are separated by delta_n = 2**8 samples (at fs=2**10)
-delta_n = 2**12
+delta_n = 2**10
 #define array of parameters alpha and beta
 alpha_list = np.arange(1,10,1)
 beta_list = np.arange(1,10,1)

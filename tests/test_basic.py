@@ -40,8 +40,7 @@ def test_data_nonstationarity():
     results['PSD'] = sg.get_psd(f, f_min, f_max) # one-sided flat-shaped PSD
 
     #Random Generator 
-    BitGenerator = np.random.PCG64(seed) #Permuted Congruential Generator 64-bit
-    rg = np.random.default_rng(BitGenerator)
+    rg = np.random.default_rng(seed)
 
     #stationary Gaussian signal
     results['stationary Gaussian'] = sg.random_gaussian(N, results['PSD'], fs, rg=rg)
@@ -86,10 +85,11 @@ def test_data_signals():
         'pseudo random': test_data['pseudo_random'],
         'burst random': test_data['burst_random'],
         'sweep': test_data['sweep'],
+        'impact pulse_cosine': test_data['impact pulse_cosine'], 
         'impact pulse_rectangular': test_data['impact pulse_rectangular'], 
         'impact pulse_sawtooth': test_data['impact pulse_sawtooth'],
         'impact pulse_triangular': test_data['impact pulse_triangular'],
-        'impact pulse_exponential': test_data['impact pulse_exponential'] 
+        'impact pulse_exponential': test_data['impact pulse_exponential']
     }
 
     #input data
@@ -98,8 +98,7 @@ def test_data_signals():
 
     results = {}
     #Random Generator 
-    BitGenerator = np.random.PCG64(seed) #Permuted Congruential Generator 64-bit
-    rg = np.random.default_rng(BitGenerator)
+    rg = np.random.default_rng(seed)
 
     #uniform random, normal random and pseudo random
     results['uniform random'] = sg.uniform_random(N=N, rg=rg)
@@ -124,6 +123,7 @@ def test_data_signals():
     N = test_data['impact N']
     n_start = test_data['impact n_start']
     amplitude = test_data['impact pulse_amplitude']
+    results['impact pulse_cosine']  = sg.impact_pulse(N=N, n_start=n_start, width=width, amplitude=amplitude, window='cosine')
     results['impact pulse_rectangular']  = sg.impact_pulse(N=N, n_start=n_start, width=width, amplitude=amplitude, window='boxcar')
     results['impact pulse_triangular'] = sg.impact_pulse(N=N, n_start=n_start, width=width, amplitude=amplitude, window='triang')
     results['impact pulse_exponential'] = sg.impact_pulse(N=N, n_start=n_start, width=width, amplitude=amplitude, window=('exponential',None,10))

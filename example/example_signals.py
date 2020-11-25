@@ -29,8 +29,7 @@ plt.show()
 
 #Random Generator 
 seed = 1234
-BitGenerator = np.random.PCG64(seed) #Permuted Congruential Generator 64-bit
-rg = np.random.Generator(BitGenerator) #or rng = np.random.default_rng(seed) 
+rg = np.random.default_rng(seed) #or rng = np.random.default_rng(seed) 
 
 #uniform random, normal random and pseudo random
 N = 1000

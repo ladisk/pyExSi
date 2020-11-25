@@ -519,7 +519,6 @@ def _get_nonstationary_signal_beta(N, PSD, fs, delta_n, alpha = 1, beta = 1, rg 
         raise ValueError("rg' must be initialized Generator object (numpy.random._generator.Generator)!")
 
     points_beta[-1] = points_beta[0] # first and last points are the same
-
     function_beta = CubicSpline(t_beta, points_beta, bc_type = 'periodic', extrapolate=None) 
     modulating_signal = function_beta(t) / np.std(function_beta(t)) # unit variance modulating signal 
 
