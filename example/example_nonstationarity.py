@@ -27,18 +27,19 @@ plt.show()
 
 
 #Random Generator seed
-seed = 0
+seed = 1234
+BitGenerator = np.random.PCG64(seed) #Permuted Congruential Generator 64-bit
+rg = np.random.Generator(BitGenerator) #or rng = np.random.default_rng(seed) 
 
 #get gaussian stationary signal
-rng = np.random.default_rng(seed)
-gausian_signal = sg.random_gaussian(N, PSD, fs, rng=rng)
+gausian_signal = sg.random_gaussian(N, PSD, fs, rg=rg)
 #calculate kurtosis 
 k_u_stationary = sg.get_kurtosis(gausian_signal)
 
 #get non-gaussian stationary signal, with kurtosis k_u=10
 k_u_target = 10
 rng = np.random.default_rng(seed)
-nongausian_signal = sg.stationary_nongaussian_signal(N, PSD, fs, k_u=k_u_target, rng=rng)
+nongausian_signal = sg.stationary_nongaussian_signal(N, PSD, fs, k_u=k_u_target, rg=rg)
 #calculate kurtosis
 k_u_stationary_nongaussian = sg.get_kurtosis(nongausian_signal)
 
@@ -46,11 +47,12 @@ k_u_stationary_nongaussian = sg.get_kurtosis(nongausian_signal)
 #a) amplitude modulation, modulating signal defined by PSD
 rng = np.random.default_rng(seed)
 PSD_modulating = sg.get_psd(f, f_low=1, f_high=k_u_target) 
-plt.plot(f,PSD)
-plt.plot(f,PSD_modulating)
+plt.plot(f,PSD, label='PSD, carrier signal')
+plt.plot(f,PSD_modulating, label='PSD, modulating signal')
 plt.xlabel('Frequency [Hz]')
 plt.ylabel('PSD [Unit**2/Hz]')
 plt.xlim(0,200)
+plt.legend()
 plt.show()
 #define array of parameters delta_m and p
 delta_m_list = np.arange(.1,2.1,.1) 
@@ -63,7 +65,7 @@ k_u_nonstationary_nongaussian_psd = sg.get_kurtosis(nongausian_nonsttaionary_sig
 
 #b) amplitude modulation, modulating signal defined by cubis spline intepolation. Points are based on beta distribution
 #Points are separated by delta_n = 2**8 samples (at fs=2**10)
-delta_n = 2**8
+delta_n = 2**12
 #define array of parameters alpha and beta
 alpha_list = np.arange(1,10,1)
 beta_list = np.arange(1,10,1)
@@ -74,10 +76,10 @@ nongausian_nonsttaionary_signal_beta = sg.nonstationary_signal(N,PSD,fs,k_u=k_u_
 k_u_nonstationary_nongaussian_beta = sg.get_kurtosis(nongausian_nonsttaionary_signal_beta)
 
 #Plot
-plt.plot(gausian_signal[:200], label = 'gaussian')
-plt.plot(nongausian_signal[:200], label = 'non-gaussian stationary')
-plt.plot(nongausian_nonsttaionary_signal_psd[:200], label = 'non-gaussian non-stationary (psd)')
-plt.plot(nongausian_nonsttaionary_signal_beta[:200], label = 'non-gaussian non-stationary (beta)')
+plt.plot(gausian_signal[:200], label = 'Gaussian')
+plt.plot(nongausian_signal[:200], label = 'non-Gaussian stationary')
+plt.plot(nongausian_nonsttaionary_signal_psd[:200], label = 'non-Gaussian non-stationary (PSD)')
+plt.plot(nongausian_nonsttaionary_signal_beta[:200], label = 'non-Gaussian non-stationary (CSI)')
 plt.xlabel('Sample [n]')
 plt.ylabel('Signal [Unit]')
 plt.legend()

@@ -27,11 +27,16 @@ plt.legend(loc='upper right')
 plt.show()
 
 
+#Random Generator 
+seed = 1234
+BitGenerator = np.random.PCG64(seed) #Permuted Congruential Generator 64-bit
+rg = np.random.Generator(BitGenerator) #or rng = np.random.default_rng(seed) 
+
 #uniform random, normal random and pseudo random
-N = 100
-uniform_random = sg.uniform_random(N=N)
-normal_random = sg.normal_random(N=N)
-pseudo_random = sg.pseudo_random(N=N)
+N = 1000
+uniform_random = sg.uniform_random(N=N,rg=rg)
+normal_random = sg.normal_random(N=N,rg=rg)
+pseudo_random = sg.pseudo_random(N=N,rg=rg)
 plt.plot(uniform_random, label='uniform random')
 plt.plot(normal_random, label='normal random')
 plt.plot(pseudo_random, label='pseudo random')
@@ -39,12 +44,13 @@ plt.xlabel('Sample [n]')
 plt.ylabel('Random signal [Unit]')
 plt.legend()
 plt.show()
+print(uniform_random[:5])
 
 
 #burst random
 N = 1000
 amplitude = 5
-burst_random = sg.burst_random(N, A=amplitude, ratio=0.1, distribution='normal', n_bursts=3)
+burst_random = sg.burst_random(N, A=amplitude, ratio=0.1, distribution='normal', n_bursts=3, rg=rg)
 plt.plot(burst_random)
 plt.xlabel('Sample [n]')
 plt.ylabel('Burst [Unit]')
