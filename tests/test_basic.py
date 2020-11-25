@@ -14,9 +14,9 @@ def test_version():
     assert isinstance(sg.__version__, str)
 
 
-def test_data():
+def test_data_nonstationarity():
 
-    with open('./tests/test_data.pkl','rb') as the_file:
+    with open('./tests/test_data_nonstationarity.pkl','rb') as the_file:
         test_data = pickle.load(the_file)
 
     results_ref = {
@@ -34,20 +34,22 @@ def test_data():
     f = test_data['freq']
     f_min = test_data['f_min']
     f_max = test_data['f_max']
+    seed = test_data['seed']
 
     results = {}
     results['PSD'] = sg.get_psd(f, f_min, f_max) # one-sided flat-shaped PSD
 
-    #Random Generator seed
-    seed = 0
+    #Random Generator 
+    BitGenerator = np.random.PCG64(seed) #Permuted Congruential Generator 64-bit
+    rg = np.random.default_rng(BitGenerator)
+
     #stationary Gaussian signal
-    rng = np.random.default_rng(seed)
-    results['stationary Gaussian'] = sg.random_gaussian(N, results['PSD'], fs, rng=rng)
+    results['stationary Gaussian'] = sg.random_gaussian(N, results['PSD'], fs, rg=rg)
 
     #stationary non-Gaussian signal
     k_u_target = 10
     rng = np.random.default_rng(seed)
-    results['stationary nonGaussian'] = sg.stationary_nongaussian_signal(N, results['PSD'], fs, k_u=k_u_target, rng=rng)
+    results['stationary nonGaussian'] = sg.stationary_nongaussian_signal(N, results['PSD'], fs, k_u=k_u_target, rg=rg)
 
     #get non-gaussian non-stationary signal, with kurtosis k_u=10
     #a) amplitude modulation, modulating signal defined by PSD
@@ -68,13 +70,71 @@ def test_data():
     results['nonstationary nonGaussian CSI']  = sg.nonstationary_signal(N,results['PSD'],fs,k_u=k_u_target,modulating_signal=('CSI',delta_n),
                                                             param1_list=alpha_list,param2_list=beta_list,seed=seed)
 
-
     for key in results.keys():
         print(key)
         np.testing.assert_almost_equal(results[key], results_ref[key], decimal=5, err_msg=f'Function: {key}')
 
 
-if __name__ == "__main__":
-    test_data()
-    #test_version()
+def test_data_signals():
 
+    with open('./tests/test_data_signals.pkl','rb') as the_file:
+        test_data = pickle.load(the_file)
+
+    results_ref = {
+        'uniform random': test_data['uniform_random'],
+        'normal random': test_data['normal_random'],
+        'pseudo random': test_data['pseudo_random'],
+        'burst random': test_data['burst_random'],
+        'sweep': test_data['sweep'],
+        'impact pulse_rectangular': test_data['impact pulse_rectangular'], 
+        'impact pulse_sawtooth': test_data['impact pulse_sawtooth'],
+        'impact pulse_triangular': test_data['impact pulse_triangular'],
+        'impact pulse_exponential': test_data['impact pulse_exponential'] 
+    }
+
+    #input data
+    seed = test_data['seed']
+    N = test_data['N'] 
+
+    results = {}
+    #Random Generator 
+    BitGenerator = np.random.PCG64(seed) #Permuted Congruential Generator 64-bit
+    rg = np.random.default_rng(BitGenerator)
+
+    #uniform random, normal random and pseudo random
+    results['uniform random'] = sg.uniform_random(N=N, rg=rg)
+    results['normal random'] = sg.normal_random(N=N, rg=rg)
+    results['pseudo random'] = sg.pseudo_random(N=N, rg=rg)
+
+    #burst random
+    amplitude = test_data['burst_random amplitude'] 
+    ratio = test_data['burst_random ratio']
+    distribution = test_data['burst_random distribution']
+    n_bursts = test_data['burst_random n_bursts']
+    results['burst random'] = sg.burst_random(N=N, A=amplitude, ratio=ratio, distribution=distribution, n_bursts=n_bursts, rg=rg)
+
+    #sweep
+    f_start = test_data['sweep f_start']
+    f_stop = test_data['sweep f_stop']
+    t = test_data['sweep t']
+    results['sweep'] = sg.sweep(time=t, f_start=f_start, f_stop=f_stop)
+
+    #impact pulse 
+    width = test_data['impact width']
+    N = test_data['impact N']
+    n_start = test_data['impact n_start']
+    amplitude = test_data['impact pulse_amplitude']
+    results['impact pulse_rectangular']  = sg.impact_pulse(N=N, n_start=n_start, width=width, amplitude=amplitude, window='boxcar')
+    results['impact pulse_triangular'] = sg.impact_pulse(N=N, n_start=n_start, width=width, amplitude=amplitude, window='triang')
+    results['impact pulse_exponential'] = sg.impact_pulse(N=N, n_start=n_start, width=width, amplitude=amplitude, window=('exponential',None,10))
+    results['impact pulse_sawtooth'] = sg.impact_pulse(N=N, n_start=n_start, width=width, amplitude=amplitude, window='sawtooth')
+
+    for key in results.keys():
+        print(key)
+        np.testing.assert_almost_equal(results[key], results_ref[key], decimal=5, err_msg=f'Function: {key}')
+
+    
+if __name__ == "__main__":
+    test_data_nonstationarity()
+    test_data_signals()
+    #test_version()
