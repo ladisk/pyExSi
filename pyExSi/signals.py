@@ -16,12 +16,12 @@ def uniform_random(N, rg = None):
 
     Example
     --------
-    >>> import numy as np
+    >>> import numpy as np
     >>> import matplotlib.pyplot as plt
-    >>> import signal_generation as sg
+    >>> import pyExSi as es
 
     >>> N = 100
-    >>> x = sg.uniform_random(N=N)
+    >>> x = es.uniform_random(N=N)
     >>> plt.plot(x)
     >>> plt.show()
     """
@@ -49,10 +49,10 @@ def normal_random(N, rg = None):
     --------
     >>> import numy as np
     >>> import matplotlib.pyplot as plt
-    >>> import signal_generation as sg
+    >>> import pyExSi as es
 
     >>> N = 100
-    >>> x = sg.uniform_random(N=N)
+    >>> x = es.uniform_random(N=N)
     >>> plt.plot(x)
     >>> plt.show()
     """
@@ -82,10 +82,10 @@ def pseudo_random(N, rg = None):
     --------
     >>> import numy as np
     >>> import matplotlib.pyplot as plt
-    >>> import signal_generation as sg
+    >>> import pyExSi as es
 
     >>> N = 100
-    >>> x = sg.pseudo_random(N=N)
+    >>> x = es.pseudo_random(N=N)
     >>> plt.plot(x)
     >>> plt.show()
     """
@@ -124,11 +124,11 @@ def burst_random(N, A=1., ratio=0.5, distribution='uniform', n_bursts=1, periodi
     --------
     >>> import numy as np
     >>> import matplotlib.pyplot as plt
-    >>> import signal_generation as sg
+    >>> import pyExSi as es
 
     >>> N = 1000
     >>> amplitude = 5
-    >>> x = sg.burst_random(N, A=amplitude, ratio=0.1, distribution='normal', n_bursts=3)
+    >>> x = es.burst_random(N, A=amplitude, ratio=0.1, distribution='normal', n_bursts=3)
     >>> plt.plot(x)
     >>> plt.show()
     """
@@ -174,10 +174,10 @@ def sweep(time, phi=0, f_start=1, sweep_rate=None, f_stop=None, mode='linear'):
     --------
     >>> import numy as np
     >>> import matplotlib.pyplot as plt
-    >>> import signal_generation as sg
+    >>> import pyExSi as es
 
     >>> t = np.linspace(0,10,1000)
-    >>> x = sg.sweep(time=t, f_start=0, f_stop=5)
+    >>> x = es.sweep(time=t, f_start=0, f_stop=5)
     >>> plt.plot(t, x)
     >>> plt.show()
     """
@@ -231,14 +231,14 @@ def impact_pulse(N, n_start, width, amplitude = 1., window = 'cosine'):
     --------
     >>> import numy as np
     >>> import matplotlib.pyplot as plt
-    >>> import signal_generation as sg
+    >>> import pyExSi as es
 
     >>> N = 1000
     >>> n_start = 100
     >>> width = 200
     >>> amplitude = 3
-    >>> x_1 = sg.impact_pulse(N=N, n_start=n_start, width=width, amplitude=amplitude, window='triang')
-    >>> x_2 = sg.impact_pulse(N=N, n_start=n_start, width=width, amplitude=amplitude, window=('exponential',None,10))
+    >>> x_1 = es.impact_pulse(N=N, n_start=n_start, width=width, amplitude=amplitude, window='triang')
+    >>> x_2 = es.impact_pulse(N=N, n_start=n_start, width=width, amplitude=amplitude, window=('exponential',None,10))
     >>> t = np.linspace(0,10,N)
     >>> plt.plot(t,x_1, label='tringular')
     >>> plt.plot(t,x_2, label='exponential')
@@ -282,7 +282,7 @@ def get_psd(f, f_low, f_high, variance = 1):
     --------
     >>> import numy as np
     >>> import matplotlib.pyplot as plt
-    >>> import signal_generation as sg
+    >>> import pyExSi as es
 
     >>> N = 1000 # number of data points of time signal
     >>> fs = 100 # sampling frequency [Hz]
@@ -292,7 +292,7 @@ def get_psd(f, f_low, f_high, variance = 1):
     >>> f_min = 10 # PSD upper frequency limit  [Hz]
     >>> f_max = 20 # PSD lower frequency limit [Hz]
 
-    >>> PSD = sg.get_psd(f, f_min, f_max) # one-sided flat-shaped PSD
+    >>> PSD = es.get_psd(f, f_min, f_max) # one-sided flat-shaped PSD
     >>> plt.plot(f,PSD)
     >>> plt.xlabel(f [Hz])
     >>> plt.ylabel(PSD [unit^2/Hz])
@@ -323,14 +323,14 @@ def random_gaussian(N, PSD, fs, rg = None):
 
     References
     ----------
-    [1] D. E. Newland. An Introduction to Random Vibrations, Spectral & Wavelet Analysis. Dover Publications,
-        2005
+    [1] D. E. Newland. An Introduction to Random Vibrations, Spectral & Wavelet Analysis. 
+    Dover Publications, 2005
 
     Example
     --------
     >>> import numy as np
     >>> import matplotlib.pyplot as plt
-    >>> import signal_generation as sg
+    >>> import pyExSi as es
 
     >>> N = 1000 # number of data points of time signal
     >>> fs = 100 # sampling frequency [Hz]
@@ -340,8 +340,8 @@ def random_gaussian(N, PSD, fs, rg = None):
     >>> f_min = 10 # PSD upper frequency limit  [Hz]
     >>> f_max = 20 # PSD lower frequency limit [Hz]
 
-    >>> PSD = sg.get_psd(f, f_min, f_max) # one-sided flat-shaped PSD
-    >>> x = sg.random_gaussian(N, PSD, fs) 
+    >>> PSD = es.get_psd(f, f_min, f_max) # one-sided flat-shaped PSD
+    >>> x = es.random_gaussian(N, PSD, fs) 
     >>> plt.plot(t,x)
     >>> plt.xlabel(t [s])
     >>> plt.ylabel(x [unit])
@@ -384,16 +384,17 @@ def stationary_nongaussian_signal(N, PSD, fs, s_k = 0, k_u = 3, mean = 0, rg = N
 
     References
     ----------
-    [1] D. E. Newland. An Introduction to Random Vibrations, Spectral & Wavelet Analysis. Dover Publications,
-        2005
-    [2] Steven R. Winterstein. Nonlinear vibration models for extremes and fatigue. ASCE Journal of Engineering
-        Mechanics, 114:1772–1790, 1988.
+    [1] D. E. Newland. An Introduction to Random Vibrations, Spectral & Wavelet
+    Analysis. Dover Publications, 2005
+
+    [2] Steven R. Winterstein. Nonlinear vibration models for extremes and 
+    fatigue. ASCE Journal of Engineering Mechanics, 114:1772–1790, 1988.
 
     Example
     --------
     >>> import numy as np
     >>> import matplotlib.pyplot as plt
-    >>> import signal_generation as sg
+    >>> import pyExSi as es
 
     >>> N = 1000 # number of data points of time signal
     >>> fs = 100 # sampling frequency [Hz]
@@ -403,9 +404,9 @@ def stationary_nongaussian_signal(N, PSD, fs, s_k = 0, k_u = 3, mean = 0, rg = N
     >>> f_min = 10 # PSD upper frequency limit  [Hz]
     >>> f_max = 20 # PSD lower frequency limit [Hz]
 
-    >>> PSD = sg.get_psd(f, f_min, f_max) # one-sided flat-shaped PSD
-    >>> x_gauss = sg.random_gaussian(N, PSD, fs) 
-    >>> x_ngauss = sg.stationary_nongaussian_signal(N, PSD, fs, k_u = 5) 
+    >>> PSD = es.get_psd(f, f_min, f_max) # one-sided flat-shaped PSD
+    >>> x_gauss = es.random_gaussian(N, PSD, fs) 
+    >>> x_ngauss = es.stationary_nongaussian_signal(N, PSD, fs, k_u = 5) 
     >>> plt.plot(t, x_gauss, label='gaussian')
     >>> plt.plot(t, x_ngauss, label='non-gaussian')
     >>> plt.xlabel(t [s])
@@ -450,13 +451,18 @@ def _get_nonstationary_signal_psd(N, PSD, fs, PSD_modulating, p = 1, delta_m = 1
 
     References
     ----------
-    [1] Frederic Kihm, Stephen A. Rizzi, N. S. Ferguson, and Andrew Halfpenny. Understanding how kurtosis is
-        transferred from input acceleration to stress response and it’s influence on fatigue life. In Proceedings of the
-        XI International Conference on Recent Advances in Structural Dynamics, Pisa, Italy, 07 2013.
-    [2] D. E. Newland. An Introduction to Random Vibrations, Spectral & Wavelet Analysis. Dover Publications,
-        2005
-    [3] Arvid Trapp, Mafake James Makua, and PeterWolfsteiner. Fatigue assessment of amplitude-modulated nonstationary
-        random vibration loading. Procedia Structural Integrity, 17:379—-386, 2019.
+    [1] Frederic Kihm, Stephen A. Rizzi, N. S. Ferguson, and Andrew Halfpenny. 
+    Understanding how kurtosis is transferred from input acceleration to stress
+    response and it’s influence on fatigue life. In Proceedings of the XI
+    International Conference on Recent Advances in Structural Dynamics, Pisa,
+    Italy, 07 2013.
+    
+    [2] D. E. Newland. An Introduction to Random Vibrations, Spectral & Wavelet
+    Analysis. Dover Publications, 2005
+
+    [3] Arvid Trapp, Mafake James Makua, and PeterWolfsteiner. Fatigue 
+    assessment of amplitude-modulated nonstationary random vibration loading.
+    Procedia Structural Integrity, 17:379—-386, 2019.
 
     """
     stationary_signal = random_gaussian(N, PSD, fs, rg = rg) # gaussian random process, carrier
@@ -495,11 +501,14 @@ def _get_nonstationary_signal_beta(N, PSD, fs, delta_n, alpha = 1, beta = 1, rg 
     
     References
     ----------
-    [1] Frederic Kihm, Stephen A. Rizzi, N. S. Ferguson, and Andrew Halfpenny. Understanding how kurtosis is
-        transferred from input acceleration to stress response and it’s influence on fatigue life. In Proceedings of the
-        XI International Conference on Recent Advances in Structural Dynamics, Pisa, Italy, 07 2013.
-    [2] D. E. Newland. An Introduction to Random Vibrations, Spectral & Wavelet Analysis. Dover Publications,
-        2005
+    [1] Frederic Kihm, Stephen A. Rizzi, N. S. Ferguson, and Andrew Halfpenny.
+    Understanding how kurtosis is transferred from input acceleration to 
+    stress response and it’s influence on fatigue life. In Proceedings of the
+    XI International Conference on Recent Advances in Structural Dynamics, Pisa,
+    Italy, 07 2013.
+
+    [2] D. E. Newland. An Introduction to Random Vibrations, Spectral & Wavelet
+    Analysis. Dover Publications, 2005
     '''
     stationary_signal = random_gaussian(N, PSD, fs, rg = rg) # gaussian random process
 
@@ -533,17 +542,21 @@ def _get_nonstationary_signal_beta(N, PSD, fs, delta_n, alpha = 1, beta = 1, rg 
     return nonstationary_signal, stationary_signal, modulating_signal
 
 
-def nonstationary_signal(N, PSD, fs, k_u = 3, modulating_signal = ('PSD', None),
-                         param1_list = None, param2_list = None, seed = None, SQ = False):
+def nonstationary_signal(N, PSD, fs, k_u = 3, modulating_signal = ('PSD', None), 
+                         param1_list = None, param2_list = None, seed = None, 
+                         SQ = False):
     """
     Non-stationary non-Gaussian realization of random process.
     
-    Non-stationarity random process is obtained by amplitude modulation of Gaussian random process[1]. 
-    Gaussian random process is obtained with IFFT of amplitude spectra with random phase [2].
-    Tuple modulating_signal selects the type of modulating signal: 'PSD' for random proces realization [3], where PSD_modulating
-    is power spectrum density of modulating signal, and 'CSI' for cubic spline 
-    interpolation [4], with sample step delta_n. The desired kurtosis k_u is obtained by iteration over lists param1_list 
-    and param2_list (for 'PSD' p and delta_m are needed, for 'CSI' alpha and beta are needed).
+    Non-stationarity random process is obtained by amplitude modulation of 
+    Gaussian random process[1].  Gaussian random process is obtained with IFFT 
+    of amplitude spectra with random phase [2]. Tuple modulating_signal selects 
+    the type of modulating signal: 'PSD' for random process realization [3], 
+    where PSD_modulating is power spectrum density of modulating signal, and 
+    'CSI' for cubic spline interpolation [4], with sample step delta_n. 
+    The desired kurtosis k_u is obtained by iteration over lists param1_list 
+    and param2_list (for 'PSD' p and delta_m are needed, for 'CSI' alpha and 
+    beta are needed).
     
     :param N: Number of data points in returned signal
     :type N: {int, float}
@@ -567,22 +580,30 @@ def nonstationary_signal(N, PSD, fs, k_u = 3, modulating_signal = ('PSD', None),
 
     References
     ----------
-    [1] Frederic Kihm, Stephen A. Rizzi, N. S. Ferguson, and Andrew Halfpenny. Understanding how kurtosis is
-        transferred from input acceleration to stress response and it’s influence on fatigue life. In Proceedings of the
-        XI International Conference on Recent Advances in Structural Dynamics, Pisa, Italy, 07 2013.
-    [2] D. E. Newland. An Introduction to Random Vibrations, Spectral & Wavelet Analysis. Dover Publications,
-        2005
-    [3] Arvid Trapp, Mafake James Makua, and PeterWolfsteiner. Fatigue assessment of amplitude-modulated nonstationary
-        random vibration loading. Procedia Structural Integrity, 17:379—-386, 2019.
-    [4] Lorenzo Capponi, Martin Česnik, Janko Slavič, Filippo Cianetti, and Miha Boltežar.  Non-stationarity index in 
-        vibration fatigue: Theoretical and ex-perimental research.International Journal of Fatigue, 104:221–230, 2017.
+    [1] Frederic Kihm, Stephen A. Rizzi, N. S. Ferguson, and Andrew Halfpenny. 
+    Understanding how kurtosis is transferred from input acceleration to stress
+    response and it’s influence on fatigue life. In Proceedings of the XI 
+    International Conference on Recent Advances in Structural Dynamics, Pisa, 
+    Italy, 07 2013.
+
+    [2] D. E. Newland. An Introduction to Random Vibrations, Spectral & Wavelet
+    Analysis. Dover Publications, 2005
+
+    [3] Arvid Trapp, Mafake James Makua, and Peter Wolfsteiner. Fatigue 
+    assessment of amplitude-modulated nonstationary random vibration loading. 
+    Procedia Structural Integrity, 17:379—-386, 2019.
+
+    [4] Lorenzo Capponi, Martin Česnik, Janko Slavič, Filippo Cianetti, and 
+    Miha Boltežar.  Non-stationarity index in vibration fatigue: Theoretical 
+    and ex-perimental research.International Journal of Fatigue, 104:221–230, 
+    2017.
         
     Example
     --------
     >>> import numy as np
     >>> import matplotlib.pyplot as plt
-    >>> import signal_generation as sg
-
+    >>> import pyExSi as es
+    
     >>> N = 1000 # number of data points of time signal
     >>> fs = 100 # sampling frequency [Hz]
     >>> t = np.arange(0,N)/fs # time vector
@@ -594,31 +615,36 @@ def nonstationary_signal(N, PSD, fs, k_u = 3, modulating_signal = ('PSD', None),
     >>> f_max_mod = 2 # modulating signals's PSD lower frequency limit [Hz]
 
     PSD of stationary and modulating signal
-    >>> PSD = sg.get_psd(f, f_low = f_min, f_high = f_max) # one-sided flat-shaped PSD
-    >>> PSD_modulating = sg.get_psd(f, f_low = f_min_mod, f_high = f_max_mod) # one-sided flat-shaped PSD
+
+    >>> PSD = es.get_psd(f, f_low = f_min, f_high = f_max) # one-sided flat-shaped PSD
+    >>> PSD_modulating = es.get_psd(f, f_low = f_min_mod, f_high = f_max_mod) # one-sided flat-shaped PSD
 
     Specify kurtosis and return non-stationary signal
+    
     >>> k_u = 5
-    >>> x_nonstationary_1 = sg.nonstationary_signal(N,PSD,fs,k_u=k_u,modulating_signal=('PSD',PSD_modulating))
+    >>> x_nonstationary_1 = es.nonstationary_signal(N,PSD,fs,k_u=k_u,modulating_signal=('PSD',PSD_modulating))
 
     Calculate kurtosis 
-    >>> k_u_1 = sg.get_kurtosis(x_nonstationary_1)
+    
+    >>> k_u_1 = es.get_kurtosis(x_nonstationary_1)
     >>> print(f'desired kurtosis :{k_u:.3f}', actual kurtosis :{k_u_1:.3f}')
 
     Refined array with amplitude modulation parameters
+    
     >>> delta_m_list = np.arange(.1,2.1,.1) 
     >>> p_list = np.arange(.1,2.1,.1)
-    >>> x_nonstationary_2 = sg.nonstationary_signal(N,PSD,fs,k_u=k_u,modulating_signal=('PSD',PSD_modulating),
+    >>> x_nonstationary_2 = es.nonstationary_signal(N,PSD,fs,k_u=k_u,modulating_signal=('PSD',PSD_modulating),
                                                     param1_list=delta_m_list,param2_list=p_list)
-    >>> k_u_2 = sg.get_kurtosis(x_nonstationary_2)
+    >>> k_u_2 = es.get_kurtosis(x_nonstationary_2)
     >>> print(f'desired kurtosis :{k_u:.3f}', actual kurtosis :{k_u_2:.3f}')
 
     Define array of parameters alpha and beta
+    
     >>> alpha_list = np.arange(1,4,.5)
     >>> beta_list = np.arange(1,4,.5)
-    >>> x_nonstationary_3 = sg.nonstationary_signal(N,PSD,fs,k_u=10,modulating_signal=('CSI',delta_n),
+    >>> x_nonstationary_3 = es.nonstationary_signal(N,PSD,fs,k_u=10,modulating_signal=('CSI',delta_n),
                                                         param1_list=alpha_list,param2_list=beta_list)
-    >>> k_u_3 = sg.get_kurtosis(x_nonstationary_3)
+    >>> k_u_3 = es.get_kurtosis(x_nonstationary_3)
     >>> print(f'desired kurtosis :{k_u:.3f}', actual kurtosis :{k_u_3:.3f}')
 
     >>> plt.plot(t, x_nonstationary_2, label='PSD')
