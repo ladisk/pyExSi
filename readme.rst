@@ -10,6 +10,7 @@ Supported excitation signals are:
     - pseudorandom distribution
 
 - random, defined by power spectral density (PSD):
+
     - stationary Gaussian
     - stationary non-Gaussian
     - non-stationary non-Gaussian random process
