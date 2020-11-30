@@ -11,12 +11,13 @@ width = 300
 N = 2*width
 n_start = 90
 amplitude = 3
-pulse_cosine = es.impact_pulse(N=N, n_start=n_start, width=width, amplitude=amplitude, window='cosine')
-pulse_rectangular = es.impact_pulse(N=N, n_start=n_start, width=width, amplitude=amplitude, window='boxcar')
-pulse_triangular = es.impact_pulse(N=N, n_start=n_start, width=width, amplitude=amplitude, window='triang')
-pulse_exponential = es.impact_pulse(N=N, n_start=n_start, width=width, amplitude=amplitude, window=('exponential',None,10))
-pulse_sawtooth = es.impact_pulse(N=N, n_start=n_start, width=width, amplitude=amplitude, window='sawtooth')
-plt.plot(pulse_cosine, '-', label='cosine')
+#pulse_sine = es.impulse(N=N, n_start=n_start, width=width, amplitude=amplitude, window='sine')
+pulse_sine = es.impulse(N=N, n_start=n_start, width=width, amplitude=amplitude, window='sine')
+pulse_rectangular = es.impulse(N=N, n_start=n_start, width=width, amplitude=amplitude, window='boxcar')
+pulse_triangular = es.impulse(N=N, n_start=n_start, width=width, amplitude=amplitude, window='triang')
+pulse_exponential = es.impulse(N=N, n_start=n_start, width=width, amplitude=amplitude, window=('exponential',None,10))
+pulse_sawtooth = es.impulse(N=N, n_start=n_start, width=width, amplitude=amplitude, window='sawtooth')
+plt.plot(pulse_sine, '-', label='sine')
 plt.plot(pulse_rectangular, '-', label='rectangular')
 plt.plot(pulse_triangular, '-', label = 'triangular')
 plt.plot(pulse_exponential, '-', label = 'exponential')

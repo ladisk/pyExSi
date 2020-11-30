@@ -213,13 +213,13 @@ def _sweep_rate(T, f_start, f_stop, mode='linear'):
     return sweep_rate
 
 
-def impact_pulse(N, n_start, width, amplitude = 1., window = 'cosine'):
+def impulse(N, n_start=0, width=None, amplitude = 1., window = 'sine'):
     """
-    Impact pulse.
+    Impact impulse of the shape defined with the parameter window.
 
     :param N: Number of points in time signal.
     :type N: int
-    :param width: Number of points for pulse width.
+    :param width: Number of points for pulse width,  `None` results in width=N
     :type width: int
     :param amplitude: Amplitude of pulse.
     :type amplitude: float
@@ -237,14 +237,20 @@ def impact_pulse(N, n_start, width, amplitude = 1., window = 'cosine'):
     >>> n_start = 100
     >>> width = 200
     >>> amplitude = 3
-    >>> x_1 = es.impact_pulse(N=N, n_start=n_start, width=width, amplitude=amplitude, window='triang')
-    >>> x_2 = es.impact_pulse(N=N, n_start=n_start, width=width, amplitude=amplitude, window=('exponential',None,10))
+    >>> x_1 = es.impulse
+(N=N, n_start=n_start, width=width, amplitude=amplitude, window='triang')
+    >>> x_2 = es.impulse
+(N=N, n_start=n_start, width=width, amplitude=amplitude, window=('exponential',None,10))
     >>> t = np.linspace(0,10,N)
     >>> plt.plot(t,x_1, label='tringular')
     >>> plt.plot(t,x_2, label='exponential')
     >>> plt.legend()
     >>> plt.show()
     """
+    if window=='sine':
+        window = 'cosine' 
+    if width is None:
+        width = N
     if not isinstance(n_start, int) or not isinstance(width, int) or not isinstance(N, int):
         raise ValueError("'N', 'n_start' and 'width' must be integers!")
     

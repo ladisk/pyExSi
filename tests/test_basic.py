@@ -84,11 +84,11 @@ def test_data_signals():
         'pseudo random': test_data['pseudo_random'],
         'burst random': test_data['burst_random'],
         'sweep': test_data['sweep'],
-        'impact pulse_cosine': test_data['impact pulse_cosine'], 
-        'impact pulse_rectangular': test_data['impact pulse_rectangular'], 
-        'impact pulse_sawtooth': test_data['impact pulse_sawtooth'],
-        'impact pulse_triangular': test_data['impact pulse_triangular'],
-        'impact pulse_exponential': test_data['impact pulse_exponential']
+        'impulse_sine': test_data['impulse_sine'], 
+        'impulse_rectangular': test_data['impulse_rectangular'], 
+        'impulse_sawtooth': test_data['impulse_sawtooth'],
+        'impulse_triangular': test_data['impulse_triangular'],
+        'impulse_exponential': test_data['impulse_exponential']
     }
 
     #input data
@@ -117,16 +117,16 @@ def test_data_signals():
     t = test_data['sweep t']
     results['sweep'] = es.sweep(time=t, f_start=f_start, f_stop=f_stop)
 
-    #impact pulse 
-    width = test_data['impact width']
-    N = test_data['impact N']
-    n_start = test_data['impact n_start']
-    amplitude = test_data['impact pulse_amplitude']
-    results['impact pulse_cosine']  = es.impact_pulse(N=N, n_start=n_start, width=width, amplitude=amplitude, window='cosine')
-    results['impact pulse_rectangular']  = es.impact_pulse(N=N, n_start=n_start, width=width, amplitude=amplitude, window='boxcar')
-    results['impact pulse_triangular'] = es.impact_pulse(N=N, n_start=n_start, width=width, amplitude=amplitude, window='triang')
-    results['impact pulse_exponential'] = es.impact_pulse(N=N, n_start=n_start, width=width, amplitude=amplitude, window=('exponential',None,10))
-    results['impact pulse_sawtooth'] = es.impact_pulse(N=N, n_start=n_start, width=width, amplitude=amplitude, window='sawtooth')
+    #impulse
+    width = test_data['impulse width']
+    N = test_data['impulse N']
+    n_start = test_data['impulse n_start']
+    amplitude = test_data['impulse_amplitude']
+    results['impulse_sine']  = es.impulse(N=N, n_start=n_start, width=width, amplitude=amplitude, window='sine')
+    results['impulse_rectangular']  = es.impulse(N=N, n_start=n_start, width=width, amplitude=amplitude, window='boxcar')
+    results['impulse_triangular'] = es.impulse(N=N, n_start=n_start, width=width, amplitude=amplitude, window='triang')
+    results['impulse_exponential'] = es.impulse(N=N, n_start=n_start, width=width, amplitude=amplitude, window=('exponential',None,10))
+    results['impulse_sawtooth'] = es.impulse(N=N, n_start=n_start, width=width, amplitude=amplitude, window='sawtooth')
 
     for key in results.keys():
         print(key)
