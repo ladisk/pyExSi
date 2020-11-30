@@ -237,10 +237,8 @@ def impulse(N, n_start=0, width=None, amplitude = 1., window = 'sine'):
     >>> n_start = 100
     >>> width = 200
     >>> amplitude = 3
-    >>> x_1 = es.impulse
-(N=N, n_start=n_start, width=width, amplitude=amplitude, window='triang')
-    >>> x_2 = es.impulse
-(N=N, n_start=n_start, width=width, amplitude=amplitude, window=('exponential',None,10))
+    >>> x_1 = es.impulse(N=N, n_start=n_start, width=width, amplitude=amplitude, window='triang')
+    >>> x_2 = es.impulse(N=N, n_start=n_start, width=width, amplitude=amplitude, window=('exponential',None,10))
     >>> t = np.linspace(0,10,N)
     >>> plt.plot(t,x_1, label='tringular')
     >>> plt.plot(t,x_2, label='exponential')
