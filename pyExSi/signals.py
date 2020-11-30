@@ -30,7 +30,7 @@ def uniform_random(N, rg = None):
     if isinstance(rg, np.random._generator.Generator):
         burst = rg.uniform(size = N) - 0.5
     else:
-        raise ValueError("rg' must be initialized Generator object (numpy.random._generator.Generator)!")
+        raise ValueError('`rg` must be initialized Generator object (numpy.random._generator.Generator)!')
 
     return burst / np.max(np.abs(burst))
 
@@ -61,7 +61,7 @@ def normal_random(N, rg = None):
     if isinstance(rg, np.random._generator.Generator):
         burst = rg.standard_normal(size = N)
     else:
-        raise ValueError("rg' must be initialized Generator object (numpy.random._generator.Generator)!")   
+        raise ValueError('`rg` must be initialized Generator object (numpy.random._generator.Generator)!')   
 
     return burst / np.max(np.abs(burst))
 
@@ -96,7 +96,7 @@ def pseudo_random(N, rg = None):
     if isinstance(rg, np.random._generator.Generator):
         R_prand = R * np.exp(1j*rg.uniform(size = len(R))*2*np.pi)
     else:
-        raise ValueError("rg' must be initialized Generator object (numpy.random._generator.Generator)!")
+        raise ValueError('`rg` must be initialized Generator object (numpy.random._generator.Generator)!')
 
     burst = np.fft.irfft(R_prand)
     return burst / np.max(np.abs(burst))
@@ -150,7 +150,7 @@ def burst_random(N, A=1., ratio=0.5, distribution='uniform', n_bursts=1, periodi
         elif distribution == 'pseudorandom':
             br = pseudo_random(N, rg = rg) * A
         else:
-            raise ValueError("Set `ditribution` either to 'normal', 'uniform' or 'periodic'.")
+            raise ValueError("Set `distribution` either to 'normal', 'uniform' or 'periodic'.")
 
         if ratio != 1.:
             N_zero = int(np.floor(N * (1-ratio)))
@@ -193,7 +193,7 @@ def sweep(time, phi=0, f_start=1, sweep_rate=None, f_stop=None, mode='linear'):
     elif mode == 'logarithmic':
         phase_t = 2*np.pi * 60*f_start/(sweep_rate*np.log(2)) * (2**(sweep_rate*time/60) - 1)
     else:
-        raise ValueError('Invalid sweep mode `{mode}`.')
+        raise ValueError(f"Invalid sweep mode `mode`='{mode}'.")
     
     s = np.sin(phase_t + phi)
     return s
@@ -250,10 +250,10 @@ def impulse(N, n_start=0, width=None, amplitude = 1., window = 'sine'):
     if width is None:
         width = N
     if not isinstance(n_start, int) or not isinstance(width, int) or not isinstance(N, int):
-        raise ValueError("'N', 'n_start' and 'width' must be integers!")
+        raise ValueError('`N`, `n_start` and `width` must be integers!')
     
     if  N < n_start + width:
-        raise ValueError("'N' must be bigger than or equal to 'n_start'+'length'!")
+        raise ValueError('`N` must be bigger than or equal to `n_start` + `length`!')
 
     pulse = np.zeros(N-n_start)
 
@@ -358,7 +358,7 @@ def random_gaussian(N, PSD, fs, rg = None):
     if isinstance(rg, np.random._generator.Generator):
         ampl_spectra_random = ampl_spectra * np.exp(1j * rg.uniform(0, 1, len(PSD)) *  2 * np.pi) #amplitude spectra, random phase 
     else:
-        raise ValueError("rg' must be initialized Generator object (numpy.random._generator.Generator)!")
+        raise ValueError('`rg` must be initialized Generator object (numpy.random._generator.Generator)!')
 
     burst = np.fft.irfft(ampl_spectra_random) # time signal
     return burst
@@ -529,7 +529,7 @@ def _get_nonstationary_signal_beta(N, PSD, fs, delta_n, alpha = 1, beta = 1, rg 
     if isinstance(rg, np.random._generator.Generator):
         points_beta = rg.beta(alpha, beta, n + 1) 
     else:
-        raise ValueError("rg' must be initialized Generator object (numpy.random._generator.Generator)!")
+        raise ValueError('`rg` must be initialized Generator object (numpy.random._generator.Generator)!')
 
     points_beta[-1] = points_beta[0] # first and last points are the same
     function_beta = CubicSpline(t_beta, points_beta, bc_type = 'periodic', extrapolate=None) 
@@ -688,7 +688,7 @@ def nonstationary_signal(N, PSD, fs, k_u = 3, modulating_signal = ('PSD', None),
             elif isinstance(seed,int):
                 rg = np.random.default_rng(seed)
             else:
-                raise ValueError("'seed' must be of type {None, int, array_like[ints], SeedSequence, BitGenerator, Generator}!")
+                raise ValueError('`seed` must be of type {None, int, array_like[ints], SeedSequence, BitGenerator, Generator}!')
 
             if mod_signal_type == 'PSD':
                 am_sig_tmp, sig_tmp, mod_tmp = _get_nonstationary_signal_psd(N, PSD, fs, 
@@ -727,3 +727,8 @@ def get_kurtosis(signal):
     μ_4 = moment(signal, 4)
     k_u = μ_4/μ_2**2
     return k_u
+
+if __name__ == "__main__":
+    time = np.linspace(0,1,100)
+    a = sweep(time=time, sweep_rate=1)
+    print(a)
