@@ -84,11 +84,11 @@ def test_data_signals():
         'pseudo random': test_data['pseudo_random'],
         'burst random': test_data['burst_random'],
         'sweep': test_data['sweep'],
-        'impulse_sine': test_data['impulse_sine'], 
-        'impulse_rectangular': test_data['impulse_rectangular'], 
-        'impulse_sawtooth': test_data['impulse_sawtooth'],
-        'impulse_triangular': test_data['impulse_triangular'],
-        'impulse_exponential': test_data['impulse_exponential']
+        'impulse sine': test_data['impulse sine'], 
+        'impulse rectangular': test_data['impulse rectangular'], 
+        'impulse sawtooth': test_data['impulse sawtooth'],
+        'impulse triangular': test_data['impulse triangular'],
+        'impulse exponential': test_data['impulse exponential']
     }
 
     #input data
@@ -121,12 +121,12 @@ def test_data_signals():
     width = test_data['impulse width']
     N = test_data['impulse N']
     n_start = test_data['impulse n_start']
-    amplitude = test_data['impulse_amplitude']
-    results['impulse_sine']  = es.impulse(N=N, n_start=n_start, width=width, amplitude=amplitude, window='sine')
-    results['impulse_rectangular']  = es.impulse(N=N, n_start=n_start, width=width, amplitude=amplitude, window='boxcar')
-    results['impulse_triangular'] = es.impulse(N=N, n_start=n_start, width=width, amplitude=amplitude, window='triang')
-    results['impulse_exponential'] = es.impulse(N=N, n_start=n_start, width=width, amplitude=amplitude, window=('exponential',None,10))
-    results['impulse_sawtooth'] = es.impulse(N=N, n_start=n_start, width=width, amplitude=amplitude, window='sawtooth')
+    amplitude = test_data['impulse amplitude']
+    results['impulse sine']  = es.impulse(N=N, n_start=n_start, width=width, amplitude=amplitude, window='sine')
+    results['impulse rectangular']  = es.impulse(N=N, n_start=n_start, width=width, amplitude=amplitude, window='boxcar')
+    results['impulse triangular'] = es.impulse(N=N, n_start=n_start, width=width, amplitude=amplitude, window='triang')
+    results['impulse exponential'] = es.impulse(N=N, n_start=n_start, width=width, amplitude=amplitude, window=('exponential',None,10))
+    results['impulse sawtooth'] = es.impulse(N=N, n_start=n_start, width=width, amplitude=amplitude, window='sawtooth')
 
     for key in results.keys():
         print(key)
