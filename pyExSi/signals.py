@@ -166,18 +166,34 @@ def burst_random(N, A=1., ratio=0.5, distribution='uniform', n_bursts=1, periodi
     return bursts
 
 
-def sweep(time, phi=0, f_start=1, sweep_rate=None, f_stop=None, mode='linear'):
+def sine_sweep(time, phi=0, f_start=1, sweep_rate=None, f_stop=None, mode='linear', phi_end=False):
     """
-    TBA
+    Generate a sine sweep signal time series.
+
+    :param time: array of shape (N,), time vector.
+    :param phi: float, initial phase of the sine signal in radians.
+        Defaults to 0.
+    :param f_start: float, initial frequency in Hz.
+    :param sweep_rate: float, the rate of sweep. In Hz/s for a linear sweep,
+        in octaves/minute for a logarithmic sweep. If not given it is
+        calculated from `time`, `f_start` and `f_stop`.
+    :param f_stop: float, final frequency in Hz.
+    :param mode: 'linear' or 'logarithmic', type of sweep, optional. 
+        Defaults to 'linear'.
+    :param phi_end: If True, return (`sweep_sine`, `phi_end`), where 
+       `phi_end` is the end phase which can be used as `phi` if this 
+       function is called for another sweep.
+       Defaults to False.
+    :returns: array of shape (N,), the generated sine sweep signal  
 
     Example
     --------
-    >>> import numy as np
+    >>> import numpy as np
     >>> import matplotlib.pyplot as plt
     >>> import pyExSi as es
 
     >>> t = np.linspace(0,10,1000)
-    >>> x = es.sweep(time=t, f_start=0, f_stop=5)
+    >>> x = es.sine_sweep(time=t, f_start=0, f_stop=5)
     >>> plt.plot(t, x)
     >>> plt.show()
     """
@@ -187,16 +203,26 @@ def sweep(time, phi=0, f_start=1, sweep_rate=None, f_stop=None, mode='linear'):
             sweep_rate = _sweep_rate(T, f_start, f_stop, mode)
         else:
             raise ValueError('`sweep_rate` is not given, please supply `f_stop`.')
+    if phi_end:
+        # prepare time
+        time_ = np.zeros(len(time)+1)
+        time_[:len(time)] = time
+        time_[-1] = time[-1] + (time[-1] - time[-2])
+    else:
+        time_ = time
     
     if mode == 'linear':
-        phase_t = 2*np.pi * (sweep_rate*0.5*time**2 + f_start*time)
+        phase_t = 2*np.pi * (sweep_rate*0.5*time_**2 + f_start*time_)
     elif mode == 'logarithmic':
-        phase_t = 2*np.pi * 60*f_start/(sweep_rate*np.log(2)) * (2**(sweep_rate*time/60) - 1)
+        phase_t = 2*np.pi * 60*f_start/(sweep_rate*np.log(2)) * (2**(sweep_rate*time_/60) - 1)
     else:
         raise ValueError(f"Invalid sweep mode `mode`='{mode}'.")
     
     s = np.sin(phase_t + phi)
-    return s
+    if phi_end:
+        return s[:-1], phase_t[-1]
+    else:
+        return s
 
 
 def _sweep_rate(T, f_start, f_stop, mode='linear'):
@@ -464,7 +490,7 @@ def _get_nonstationary_signal_psd(N, PSD, fs, PSD_modulating, p = 1, delta_m = 1
     [2] D. E. Newland. An Introduction to Random Vibrations, Spectral & Wavelet
     Analysis. Dover Publications, 2005
 
-    [3] Arvid Trapp, Mafake James Makua, and PeterWolfsteiner. Fatigue 
+    [3] Arvid Trapp, Mafake James Makua, and Peter Wolfsteiner. Fatigue 
     assessment of amplitude-modulated nonstationary random vibration loading.
     Procedia Structural Integrity, 17:379—-386, 2019.
 
@@ -730,5 +756,5 @@ def get_kurtosis(signal):
 
 if __name__ == "__main__":
     time = np.linspace(0,1,100)
-    a = sweep(time=time, sweep_rate=1)
+    a = sine_sweep(time=time, sweep_rate=1)
     print(a)

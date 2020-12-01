@@ -16,7 +16,7 @@ Supported excitation signals are:
     - non-stationary non-Gaussian random process
 
 - burst random
-- sweep sine
+- sine sweep
 
 
 Simple example

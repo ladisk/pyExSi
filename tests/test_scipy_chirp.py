@@ -1,7 +1,7 @@
 """
 This is only meant to demonstrate the agreement of the `sweep` implementation 
 with `scipy.signal.chirp`. Can be used for unit testing of our sine sweep 
-implementation down the road, but it also shows that the current `sweep` 
+implementation down the road, but it also shows that the current `sine_sweep` 
 function could be reworked to only call `scipy.signal.sweep` with minimal effort.
 """
 import sys, os
@@ -28,7 +28,7 @@ def test_chirp_vs_scipy(plot=False):
     for method in ['linear', 'logarithmic']:
 
         s_scipy = chirp(ts, f0, t1, f1, phi=phi_scipy, method=method)
-        s_own = es.sweep(ts, phi, f_start=f0, f_stop=f1, mode=method)
+        s_own = es.sine_sweep(ts, phi, f_start=f0, f_stop=f1, mode=method)
         results.append((s_scipy, s_own))
 
         if plot:

@@ -148,9 +148,9 @@ def get_signals_data():
     test_data['burst_random'] = burst_random
 
 
-    #sweep
+    #sine sweep
     t = np.linspace(0,10,1000)
-    sweep = es.sweep(time=t, f_start=0, f_stop=5)
+    sweep = es.sine_sweep(time=t, f_start=0, f_stop=5)
     test_data['sweep t'] = t
     test_data['sweep f_start'] = 0
     test_data['sweep f_stop'] = 5

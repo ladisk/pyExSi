@@ -115,7 +115,7 @@ def test_data_signals():
     f_start = test_data['sweep f_start']
     f_stop = test_data['sweep f_stop']
     t = test_data['sweep t']
-    results['sweep'] = es.sweep(time=t, f_start=f_start, f_stop=f_stop)
+    results['sweep'] = es.sine_sweep(time=t, f_start=f_start, f_stop=f_stop)
 
     #impulse
     width = test_data['impulse width']

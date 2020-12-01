@@ -59,8 +59,8 @@ plt.show()
 
 #sweep
 t = np.linspace(0,10,1000)
-sweep = es.sweep(time=t, f_start=0, f_stop=5)
+sweep = es.sine_sweep(time=t, f_start=0, f_stop=5)
 plt.plot(t, sweep)
 plt.xlabel('Time [s]')
-plt.ylabel('Sweep [Unit]')
+plt.ylabel('Sine sweep [Unit]')
 plt.show()
