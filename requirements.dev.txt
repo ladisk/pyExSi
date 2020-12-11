@@ -6,4 +6,4 @@ wheel
 pytest
 sphinx-rtd-theme
 matplotlib
-git+git://github.com/psf/black
+black
