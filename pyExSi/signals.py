@@ -814,7 +814,7 @@ def get_kurtosis(signal):
     """
     Kurtosis of signal.
 
-    :param signal: Inpus signal.
+    :param signal: input signal.
     :type signal: array
     :returns: kurtosis
     """
