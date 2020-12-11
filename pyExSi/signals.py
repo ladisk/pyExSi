@@ -542,20 +542,21 @@ def _get_nonstationary_signal_beta(N, PSD, fs, delta_n, alpha = 1, beta = 1, rg 
     '''
     stationary_signal = random_gaussian(N, PSD, fs, rg = rg) # gaussian random process
 
-    if (delta_n & (delta_n-1) == 0) and delta_n != 0 : # if step is power of 2
-        delta_n = delta_n + 1
-
     t = np.arange(0, N) / fs # time vector
-    t_beta = np.copy(t[::delta_n]) # time vector for modulating signal, with step delta_n
-    t_beta[-1] = t[-1] # last data point in both time vectors are the same
-    n = N//delta_n # number of data points for beta distribution
-
+    n = N//delta_n # number of time intervals for beta distribution points
+    t_beta = np.copy(t[:n*delta_n+1:delta_n]) # time vector for modulating signal, with step delta_n
+    t_beta = np.append(t_beta, t[-1])
+    if N%delta_n != 0:
+            n += 1
+    t_beta[-1] = t[-1] 
+    
     if rg == None:
         rg = np.random.default_rng()
     if isinstance(rg, np.random._generator.Generator):
-        points_beta = rg.beta(alpha, beta, n + 1) 
+        points_beta = rg.beta(alpha, beta, n+1)
+        points_beta[-1] = points_beta[0] # first and last points are the same
     else:
-        raise ValueError('`rg` must be initialized Generator object (numpy.random._generator.Generator)!')
+        raise ValueError("rg' must be initialized Generator object (numpy.random._generator.Generator)!")
 
     points_beta[-1] = points_beta[0] # first and last points are the same
     function_beta = CubicSpline(t_beta, points_beta, bc_type = 'periodic', extrapolate=None) 
@@ -566,7 +567,7 @@ def _get_nonstationary_signal_beta(N, PSD, fs, delta_n, alpha = 1, beta = 1, rg 
         modulating_signal += np.abs(np.min(modulating_signal))
 
 
-    nonstationary_signal = stationary_signal * modulating_signal #non-stationary signal
+    nonstationary_signal = stationary_signal * modulating_signal[:len(stationary_signal)] #non-stationary signal
     nonstationary_signal /= np.std(nonstationary_signal) # unit variance
     
     return nonstationary_signal, stationary_signal, modulating_signal
