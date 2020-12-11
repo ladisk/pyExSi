@@ -5,12 +5,14 @@ implementation down the road, but it also shows that the current `sine_sweep`
 function could be reworked to only call `scipy.signal.sweep` with minimal effort.
 """
 import sys, os
+
 my_path = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, my_path + '/../')
 
 from scipy.signal import chirp
 import pyExSi as es
 import numpy as np
+
 
 def test_chirp_vs_scipy(plot=False):
     if plot:
@@ -22,7 +24,7 @@ def test_chirp_vs_scipy(plot=False):
     t1 = ts[-1]
     method = 'linear'
     phi = 0
-    phi_scipy = (phi - np.pi/2) / np.pi * 180
+    phi_scipy = (phi - np.pi / 2) / np.pi * 180
 
     results = []
     for method in ['linear', 'logarithmic']:
@@ -39,17 +41,17 @@ def test_chirp_vs_scipy(plot=False):
 
             S_scipy = np.fft.rfft(s_scipy) / len(ts) * 2
             S_own = np.fft.rfft(s_own) / len(ts) * 2
-            freq_s = np.fft.rfftfreq(len(ts), ts[1]-ts[0])
+            freq_s = np.fft.rfftfreq(len(ts), ts[1] - ts[0])
 
             ax[1].set_title(f'amplitude spectrum, mode={method}')
             ax[1].plot(freq_s, np.abs(S_scipy), label='scipy')
             ax[1].plot(freq_s, np.abs(S_own), '--', label='own')
             ax[1].axvline(x=f0, color='k')
             ax[1].axvline(x=f1, color='k')
-            ax[1].set_xlim(f0-10, f1+5)
+            ax[1].set_xlim(f0 - 10, f1 + 5)
             ax[1].legend()
             plt.tight_layout()
-    
+
     if plot:
         plt.show()
 

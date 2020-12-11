@@ -15,8 +15,7 @@ with open(init_file, 'r') as f:
     if match:
         version = match.group(1)
     else:
-        raise RuntimeError(
-            'Cannot find __version__ in {}'.format(init_file))
+        raise RuntimeError('Cannot find __version__ in {}'.format(init_file))
 
 # Read the "README.rst" for project description
 with open('README.rst', 'r', encoding='utf8') as f:
@@ -32,6 +31,7 @@ def parse_requirements(filename):
             if line and not line.startswith("#"):
                 lines.append(line)
     return lines
+
 
 requirements = parse_requirements('requirements.txt')
 
@@ -50,7 +50,9 @@ if __name__ == '__main__':
         install_requires=requirements,
         keywords=['excitation signal, structural dynamics, dynamic testing'],
         packages=['pyExSi'],
-        classifiers=['Development Status :: 3 - Alpha',
-                     'Intended Audience :: Developers',
-                     'Programming Language :: Python :: 3.7']
+        classifiers=[
+            'Development Status :: 3 - Alpha',
+            'Intended Audience :: Developers',
+            'Programming Language :: Python :: 3.7',
+        ],
     )
