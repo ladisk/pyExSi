@@ -200,7 +200,7 @@ def get_signals_data():
         n_start=n_start,
         width=width,
         amplitude=amplitude,
-        window=('exponential', None, 10),
+        window=('exponential', 0, 10),
     )
     pulse_sawtooth = es.impulse(
         N=N, n_start=n_start, width=width, amplitude=amplitude, window='sawtooth'

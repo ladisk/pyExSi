@@ -164,7 +164,7 @@ def test_data_signals():
         n_start=n_start,
         width=width,
         amplitude=amplitude,
-        window=('exponential', None, 10),
+        window=('exponential', 0, 10),
     )
     results['impulse sawtooth'] = es.impulse(
         N=N, n_start=n_start, width=width, amplitude=amplitude, window='sawtooth'
