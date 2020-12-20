@@ -646,7 +646,7 @@ def nonstationary_signal(
     of amplitude spectra with random phase [2]. Tuple modulating_signal selects
     the type of modulating signal: 'PSD' for random process realization [3],
     where PSD_modulating is power spectrum density of modulating signal, and
-    'CSI' for cubic spline interpolation [4], with sample step delta_n.
+    'CSI' for cubic spline interpolation [4,5], with sample step delta_n.
     The desired kurtosis k_u is obtained by iteration over lists param1_list
     and param2_list (for 'PSD' p and delta_m are needed, for 'CSI' alpha and
     beta are needed).
@@ -690,6 +690,10 @@ def nonstationary_signal(
     Miha Boltežar.  Non-stationarity index in vibration fatigue: Theoretical
     and ex-perimental research.International Journal of Fatigue, 104:221–230,
     2017.
+
+    [5] Janko Slavič, Matjaž Mršnik, Martin Česnik, Jaka Javh, Miha Boltežar. 
+    Vibration Fatigue by Spectral Methods, From Structural Dynamics to Fatigue Damage
+    – Theory and Experiments, ISBN: 9780128221907, Elsevier, 1st September 2020
 
     Example
     --------
