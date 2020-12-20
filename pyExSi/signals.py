@@ -433,7 +433,7 @@ def stationary_nongaussian_signal(N, PSD, fs, s_k=0, k_u=3, mean=0, rg=None):
     :type N: int
     :param PSD: one-sided power spectral density
     :type PSD:  array
-    :param fs: sampling period
+    :param fs: sampling frequency
     :type fs: int, float
     :param s_k: skewness of returned signal
     :type s_k: int, float
@@ -504,7 +504,7 @@ def _get_nonstationary_signal_psd(N, PSD, fs, PSD_modulating, p=1, delta_m=1, rg
     :type N: int, float
     :param PSD: one-sided power spectral density of carrier signal
     :type PSD: array
-    :param fs: sampling period
+    :param fs: sampling frequency
     :type fs: int, float
     :param PSD_modulating: one-sided power spectral density of modulating signal
     :type PSD_modulating: array
@@ -562,7 +562,7 @@ def _get_nonstationary_signal_beta(N, PSD, fs, delta_n, alpha=1, beta=1, rg=None
     :type N: int, float
     :param PSD: One-sided power spectral density of carrier signal
     :type PSD: array
-    :param fs: Sampling period
+    :param fs: sampling frequency
     :type fs: int, float
     :param delta_n: Distance beetwen consecutive beta distributed points. Smaller delta_n corresponds to hihger modulation frequency.
     :type delta_n: int
@@ -655,7 +655,7 @@ def nonstationary_signal(
     :type N: {int, float}
     :param PSD: One-sided power spectral density of carrier signal
     :type PSD: array
-    :param fs: Sampling period
+    :param fs: sampling frequency
     :type fs: {int, float}
     :param k_u: Desired kurtosis value of returned signal. Defaults to 3 (Gaussian random process).
     :type k_u: float
