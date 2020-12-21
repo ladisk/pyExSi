@@ -12,7 +12,6 @@ width = 300
 N = 2 * width
 n_start = 90
 amplitude = 3
-# pulse_sine = es.impulse(N=N, n_start=n_start, width=width, amplitude=amplitude, window='sine')
 pulse_sine = es.impulse(
     N=N, n_start=n_start, width=width, amplitude=amplitude, window='sine'
 )
@@ -76,7 +75,7 @@ plt.show()
 
 # sweep
 t = np.linspace(0, 10, 1000)
-sweep = es.sine_sweep(time=t, f_start=0, f_stop=5)
+sweep = es.sine_sweep(time=t, freq_start=0, freq_stop=5)
 plt.plot(t, sweep)
 plt.xlabel('Time [s]')
 plt.ylabel('Sine sweep [Unit]')

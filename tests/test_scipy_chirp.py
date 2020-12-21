@@ -30,7 +30,7 @@ def test_chirp_vs_scipy(plot=False):
     for method in ['linear', 'logarithmic']:
 
         s_scipy = chirp(ts, f0, t1, f1, phi=phi_scipy, method=method)
-        s_own = es.sine_sweep(ts, phi, f_start=f0, f_stop=f1, mode=method)
+        s_own = es.sine_sweep(ts, phi, freq_start=f0, freq_stop=f1, mode=method)
         results.append((s_scipy, s_own))
 
         if plot:

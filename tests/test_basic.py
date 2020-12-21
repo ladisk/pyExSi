@@ -23,39 +23,40 @@ def test_data_nonstationarity():
         'PSD': test_data['PSD'],
         'PSD modulating': test_data['PSD modulating'],
         'stationary Gaussian': test_data['stationary Gaussian'],
+        'kurtosis': test_data['kurtosis'],
         'stationary nonGaussian': test_data['stationary nonGaussian'],
-        'nonstationary nonGaussian PSD': test_data['nonstationary nonGaussian_PSD'],
+        'nonstationary nonGaussian PSD': test_data['nonstationary nonGaussian PSD'],
         'nonstationary nonGaussian CSI': test_data['nonstationary nonGaussian CSI'],
     }
 
     # input data
     N = test_data['N']
     fs = test_data['fs']
-    f = test_data['freq']
-    f_min = test_data['f_min']
-    f_max = test_data['f_max']
+    freq = test_data['freq']
+    freq_lower = test_data['freq_lower']
+    freq_upper = test_data['freq_upper']
     seed = test_data['seed']
 
     results = {}
-    results['PSD'] = es.get_psd(f, f_min, f_max)  # one-sided flat-shaped PSD
+    results['PSD'] = es.get_psd(freq, freq_lower, freq_upper)  # one-sided flat-shaped PSD
 
     # Random Generator
     rg = np.random.default_rng(seed)
 
     # stationary Gaussian signal
     results['stationary Gaussian'] = es.random_gaussian(N, results['PSD'], fs, rg=rg)
+    results['kurtosis']= es.get_kurtosis(results['stationary Gaussian'])
 
     # stationary non-Gaussian signal
     k_u_target = 10
-    rng = np.random.default_rng(seed)
+    rg = np.random.default_rng(seed)
     results['stationary nonGaussian'] = es.stationary_nongaussian_signal(
         N, results['PSD'], fs, k_u=k_u_target, rg=rg
     )
 
     # get non-gaussian non-stationary signal, with kurtosis k_u=10
     # a) amplitude modulation, modulating signal defined by PSD
-    rng = np.random.default_rng(seed)
-    results['PSD modulating'] = es.get_psd(f, f_low=1, f_high=k_u_target)
+    results['PSD modulating'] = es.get_psd(freq, freq_lower=1, freq_upper=10)
     # define array of parameters delta_m and p
     delta_m_list = test_data['delta m list']
     p_list = test_data['p list']
@@ -140,10 +141,10 @@ def test_data_signals():
     )
 
     # sweep
-    f_start = test_data['sweep f_start']
-    f_stop = test_data['sweep f_stop']
+    freq_start = test_data['sweep freq_start']
+    freq_stop = test_data['sweep freq_stop']
     t = test_data['sweep t']
-    results['sweep'] = es.sine_sweep(time=t, f_start=f_start, f_stop=f_stop)
+    results['sweep'] = es.sine_sweep(time=t, freq_start=freq_start, freq_stop=freq_stop)
 
     # impulse
     width = test_data['impulse width']
@@ -178,6 +179,7 @@ def test_data_signals():
 
 
 if __name__ == "__main__":
+    test_data_nonstationarity()
     test_data_signals()
 
 if __name__ == '__mains__':

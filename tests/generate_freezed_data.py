@@ -20,21 +20,21 @@ def get_nonstationarity_data(show=False):
 
     # define frequency vector and one-sided flat-shaped PSD
     M = N // 2 + 1  # number of data points of frequency vector
-    f = np.arange(0, M, 1) * fs / N  # frequency vector
-    f_min = 50  # PSD upper frequency limit  [Hz]
-    f_max = 100  # PSD lower frequency limit [Hz]
-    PSD = es.get_psd(f, f_min, f_max)  # one-sided flat-shaped PSD
+    freq = np.arange(0, M, 1) * fs / N  # frequency vector
+    freq_lower = 50  # PSD lower frequency limit  [Hz]
+    freq_upper = 100  # PSD upper frequency limit [Hz]
+    PSD = es.get_psd(freq, freq_lower, freq_upper)  # one-sided flat-shaped PSD
     if show:
-        plt.plot(f, PSD)
+        plt.plot(freq, PSD)
         plt.xlim(0, 200)
         plt.show()
 
     test_data['N'] = N
     test_data['fs'] = fs
-    test_data['freq'] = f
+    test_data['freq'] = freq
     test_data['PSD'] = PSD
-    test_data['f_min'] = f_min
-    test_data['f_max'] = f_max
+    test_data['freq_lower'] = freq_lower
+    test_data['freq_upper'] = freq_upper
 
     # Random Generator seed
     seed = 1234
@@ -42,30 +42,28 @@ def get_nonstationarity_data(show=False):
     rg = np.random.default_rng(BitGenerator)
 
     # get gaussian stationary signal
-    gausian_signal = es.random_gaussian(N, PSD, fs, rg=rg)
+    gaussian_signal = es.random_gaussian(N, PSD, fs, rg=rg)
     # calculate kurtosis
-    k_u_stationary = es.get_kurtosis(gausian_signal)
+    k_u_stationary = es.get_kurtosis(gaussian_signal)
 
     # get non-gaussian stationary signal, with kurtosis k_u=10
     k_u_target = 10
-    rng = np.random.default_rng(seed)
+    rg = np.random.default_rng(seed)
     nongausian_signal = es.stationary_nongaussian_signal(
         N, PSD, fs, k_u=k_u_target, rg=rg
     )
-    # calculate kurtosis
-    k_u_stationary_nongaussian = es.get_kurtosis(nongausian_signal)
 
     test_data['seed'] = seed
-    test_data['stationary Gaussian'] = gausian_signal
+    test_data['stationary Gaussian'] = gaussian_signal
+    test_data['kurtosis'] = k_u_stationary
     test_data['stationary nonGaussian'] = nongausian_signal
 
     # get non-gaussian non-stationary signal, with kurtosis k_u=10
     # a) amplitude modulation, modulating signal defined by PSD
-    rng = np.random.default_rng(seed)
-    PSD_modulating = es.get_psd(f, f_low=1, f_high=10)
+    PSD_modulating = es.get_psd(freq, freq_lower=1, freq_upper=10)
     if show:
-        plt.plot(f, PSD)
-        plt.plot(f, PSD_modulating)
+        plt.plot(freq, PSD)
+        plt.plot(freq, PSD_modulating)
         plt.xlim(0, 200)
         plt.show()
 
@@ -75,7 +73,7 @@ def get_nonstationarity_data(show=False):
     delta_m_list = np.arange(0.1, 2.1, 0.25)
     p_list = np.arange(0.1, 2.1, 0.25)
     # get signal
-    nongausian_nonstationary_signal_psd = es.nonstationary_signal(
+    nongaussian_nonstationary_signal_psd = es.nonstationary_signal(
         N,
         PSD,
         fs,
@@ -85,14 +83,10 @@ def get_nonstationarity_data(show=False):
         param2_list=p_list,
         seed=seed,
     )
-    # calculate kurtosis
-    k_u_nonstationary_nongaussian_psd = es.get_kurtosis(
-        nongausian_nonstationary_signal_psd
-    )
 
     test_data['delta m list'] = delta_m_list
     test_data['p list'] = p_list
-    test_data['nonstationary nonGaussian_PSD'] = nongausian_nonstationary_signal_psd
+    test_data['nonstationary nonGaussian PSD'] = nongaussian_nonstationary_signal_psd
 
     # b) amplitude modulation, modulating signal defined by cubis spline intepolation. Points are based on beta distribution
     # Points are separated by delta_n = 2**8 samples (at fs=2**10)
@@ -101,7 +95,7 @@ def get_nonstationarity_data(show=False):
     alpha_list = np.arange(1, 10, 1)
     beta_list = np.arange(1, 10, 1)
     # get signal
-    nongausian_nonsttaionary_signal_beta = es.nonstationary_signal(
+    nongaussian_nonstationary_signal_beta = es.nonstationary_signal(
         N,
         PSD,
         fs,
@@ -111,15 +105,11 @@ def get_nonstationarity_data(show=False):
         param2_list=beta_list,
         seed=seed,
     )
-    # calculate kurtosis
-    k_u_nonstationary_nongaussian_beta = es.get_kurtosis(
-        nongausian_nonsttaionary_signal_beta
-    )
 
     test_data['delta_n'] = delta_n
     test_data['alpha list'] = alpha_list
     test_data['beta list'] = beta_list
-    test_data['nonstationary nonGaussian CSI'] = nongausian_nonsttaionary_signal_beta
+    test_data['nonstationary nonGaussian CSI'] = nongaussian_nonstationary_signal_beta
 
     if show:
         t_indx = np.logical_and(t >= 0, t < 10)
@@ -128,12 +118,12 @@ def get_nonstationarity_data(show=False):
         plt.plot(t[t_indx], nongausian_signal[t_indx], label='non-gaussian stationary')
         plt.plot(
             t[t_indx],
-            nongausian_nonstationary_signal_psd[t_indx],
+            nongaussian_nonstationary_signal_psd[t_indx],
             label='non-gaussian non-stationary (psd)',
         )
         plt.plot(
             t[t_indx],
-            nongausian_nonsttaionary_signal_beta[t_indx],
+            nongaussian_nonstationary_signal_beta[t_indx],
             label='non-gaussian non-stationary (beta)',
         )
         plt.legend()
@@ -175,10 +165,10 @@ def get_signals_data():
 
     # sine sweep
     t = np.linspace(0, 10, 1000)
-    sweep = es.sine_sweep(time=t, f_start=0, f_stop=5)
+    sweep = es.sine_sweep(time=t, freq_start=0, freq_stop=5)
     test_data['sweep t'] = t
-    test_data['sweep f_start'] = 0
-    test_data['sweep f_stop'] = 5
+    test_data['sweep freq_start'] = 0
+    test_data['sweep freq_stop'] = 5
     test_data['sweep'] = sweep
 
     # impact pulse

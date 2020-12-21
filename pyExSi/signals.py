@@ -183,7 +183,7 @@ def burst_random(
 
 
 def sine_sweep(
-    time, phi=0, f_start=1, sweep_rate=None, f_stop=None, mode='linear', phi_end=False
+    time, phi=0, freq_start=1, sweep_rate=None, freq_stop=None, mode='linear', phi_end=False
 ):
     """
     Generate a sine sweep signal time series.
@@ -191,11 +191,11 @@ def sine_sweep(
     :param time: array of shape (N,), time vector.
     :param phi: float, initial phase of the sine signal in radians.
         Defaults to 0.
-    :param f_start: float, initial frequency in Hz.
+    :param freq_start: float, initial frequency in Hz.
     :param sweep_rate: float, the rate of sweep. In Hz/s for a linear sweep,
         in octaves/minute for a logarithmic sweep. If not given it is
-        calculated from `time`, `f_start` and `f_stop`.
-    :param f_stop: float, final frequency in Hz.
+        calculated from `time`, `freq_start` and `freq_stop`.
+    :param freq_stop: float, final frequency in Hz.
     :param mode: 'linear' or 'logarithmic', type of sweep, optional.
         Defaults to 'linear'.
     :param phi_end: If True, return (`sweep_sine`, `phi_end`), where
@@ -211,16 +211,16 @@ def sine_sweep(
     >>> import pyExSi as es
 
     >>> t = np.linspace(0,10,1000)
-    >>> x = es.sine_sweep(time=t, f_start=0, f_stop=5)
+    >>> x = es.sine_sweep(time=t, freq_start=0, freq_stop=5)
     >>> plt.plot(t, x)
     >>> plt.show()
     """
     if sweep_rate is None:
-        if not f_stop is None:
+        if not freq_stop is None:
             T = time[-1] - time[0]
-            sweep_rate = _sweep_rate(T, f_start, f_stop, mode)
+            sweep_rate = _sweep_rate(T, freq_start, freq_stop, mode)
         else:
-            raise ValueError('`sweep_rate` is not given, please supply `f_stop`.')
+            raise ValueError('`sweep_rate` is not given, please supply `freq_stop`.')
     if phi_end:
         # prepare time
         time_ = np.zeros(len(time) + 1)
@@ -230,13 +230,13 @@ def sine_sweep(
         time_ = time
 
     if mode == 'linear':
-        phase_t = 2 * np.pi * (sweep_rate * 0.5 * time_ ** 2 + f_start * time_)
+        phase_t = 2 * np.pi * (sweep_rate * 0.5 * time_ ** 2 + freq_start * time_)
     elif mode == 'logarithmic':
         phase_t = (
             2
             * np.pi
             * 60
-            * f_start
+            * freq_start
             / (sweep_rate * np.log(2))
             * (2 ** (sweep_rate * time_ / 60) - 1)
         )
@@ -250,15 +250,15 @@ def sine_sweep(
         return s
 
 
-def _sweep_rate(T, f_start, f_stop, mode='linear'):
+def _sweep_rate(T, freq_start, freq_stop, mode='linear'):
     """
     Calculate the sweep rate given the time difference, initial and end
     frequency values and sweep mode. For internal use by `sweep`.
     """
     if mode == 'linear':
-        sweep_rate = (f_stop - f_start) / T  # Hz/s
+        sweep_rate = (freq_stop - freq_start) / T  # Hz/s
     elif mode == 'logarithmic':
-        sweep_rate = np.log((f_stop / f_start) ** (60 / T / np.log(2)))  # octaves/min
+        sweep_rate = np.log((freq_stop / freq_start) ** (60 / T / np.log(2)))  # octaves/min
     else:
         raise ValueError('Invalid sweep mode `{mode}`.')
     return sweep_rate
@@ -323,16 +323,16 @@ def impulse(N, n_start=0, width=None, amplitude=1.0, window='sine'):
     return pulse
 
 
-def get_psd(f, f_low, f_high, variance=1):
+def get_psd(freq, freq_lower, freq_upper, variance=1):
     """
     One-sided flat-shaped power spectral density (PSD).
 
-    :param f: Frequency vector [Hz]
-    :type f: array
-    :param f_low: Lower frequency of PSD [Hz]
-    :type f_low: float
-    :param f_high: Higher frequency of PSD [Hz]
-    :type f_high: float
+    :param freq: Frequency vector [Hz]
+    :type freq: array
+    :param freq_lower: Lower frequency of PSD [Hz]
+    :type freq_lower: float
+    :param freq_upper: Upper frequency of PSD [Hz]
+    :type freq_upper: float
     :param variance: Variance of random process, described by PSD [unit^2]
     :type variance: float
     :returns: one-sided flat-shaped PSD [unit^2/Hz]
@@ -347,19 +347,19 @@ def get_psd(f, f_low, f_high, variance=1):
     >>> fs = 100 # sampling frequency [Hz]
     >>> t = np.arange(0,N)/fs # time vector
     >>> M = N // 2 + 1 # number of data points of frequency vector
-    >>> f = np.arange(0, M, 1) * fs / N # frequency vector
-    >>> f_min = 10 # PSD upper frequency limit  [Hz]
-    >>> f_max = 20 # PSD lower frequency limit [Hz]
+    >>> freq = np.arange(0, M, 1) * fs / N # frequency vector
+    >>> freq_lower = 10 # PSD lower frequency limit  [Hz]
+    >>> freq_upper = 20 # PSD upper frequency limit [Hz]
 
-    >>> PSD = es.get_psd(f, f_min, f_max) # one-sided flat-shaped PSD
-    >>> plt.plot(f,PSD)
+    >>> PSD = es.get_psd(freq, freq_lower, freq_upper) # one-sided flat-shaped PSD
+    >>> plt.plot(freq,PSD)
     >>> plt.xlabel(f [Hz])
     >>> plt.ylabel(PSD [unit^2/Hz])
     >>> plt.show()
     """
-    PSD = np.zeros(len(f))
-    indx = np.logical_and(f >= f_low, f <= f_high)
-    PSD_width = f[indx][-1] - f[indx][0]
+    PSD = np.zeros(len(freq))
+    indx = np.logical_and(freq >= freq_lower, freq <= freq_upper)
+    PSD_width = freq[indx][-1] - freq[indx][0]
     PSD[indx] = variance / PSD_width  # area under PSD is variance
     return PSD
 
@@ -395,11 +395,11 @@ def random_gaussian(N, PSD, fs, rg=None):
     >>> fs = 100 # sampling frequency [Hz]
     >>> t = np.arange(0,N)/fs # time vector
     >>> M = N // 2 + 1 # number of data points in frequency vector
-    >>> f = np.arange(0, M, 1) * fs / N # frequency vector
-    >>> f_min = 10 # PSD upper frequency limit  [Hz]
-    >>> f_max = 20 # PSD lower frequency limit [Hz]
+    >>> freq = np.arange(0, M, 1) * fs / N # frequency vector
+    >>> freq_lower = 10 # PSD lower frequency limit  [Hz]
+    >>> freq_upper = 20 # PSD upper frequency limit [Hz]
 
-    >>> PSD = es.get_psd(f, f_min, f_max) # one-sided flat-shaped PSD
+    >>> PSD = es.get_psd(freq, freq_lower, freq_upper) # one-sided flat-shaped PSD
     >>> x = es.random_gaussian(N, PSD, fs)
     >>> plt.plot(t,x)
     >>> plt.xlabel(t [s])
@@ -463,11 +463,11 @@ def stationary_nongaussian_signal(N, PSD, fs, s_k=0, k_u=3, mean=0, rg=None):
     >>> fs = 100 # sampling frequency [Hz]
     >>> t = np.arange(0,N)/fs # time vector
     >>> M = N // 2 + 1 # number of data points of frequency vector
-    >>> f = np.arange(0, M, 1) * fs / N # frequency vector
-    >>> f_min = 10 # PSD upper frequency limit  [Hz]
-    >>> f_max = 20 # PSD lower frequency limit [Hz]
+    >>> freq = np.arange(0, M, 1) * fs / N # frequency vector
+    >>> freq_lower = 10 # PSD lower frequency limit  [Hz]
+    >>> freq_upper = 20 # PSD upper frequency limit [Hz]
 
-    >>> PSD = es.get_psd(f, f_min, f_max) # one-sided flat-shaped PSD
+    >>> PSD = es.get_psd(freq, freq_lower, freq_upper) # one-sided flat-shaped PSD
     >>> x_gauss = es.random_gaussian(N, PSD, fs)
     >>> x_ngauss = es.stationary_nongaussian_signal(N, PSD, fs, k_u = 5)
     >>> plt.plot(t, x_gauss, label='gaussian')
@@ -705,16 +705,16 @@ def nonstationary_signal(
     >>> fs = 100 # sampling frequency [Hz]
     >>> t = np.arange(0,N)/fs # time vector
     >>> M = N // 2 + 1 # number of data points of frequency vector
-    >>> f = np.arange(0, M, 1) * fs / N # frequency vector
-    >>> f_min = 10 # signals's PSD upper frequency limit  [Hz]
-    >>> f_max = 20 # signals' PSD lower frequency limit [Hz]
-    >>> f_min_mod = 1 # modulating signals's PSD upper frequency limit  [Hz]
-    >>> f_max_mod = 2 # modulating signals's PSD lower frequency limit [Hz]
+    >>> freq = np.arange(0, M, 1) * fs / N # frequency vector
+    >>> freq_lower = 10 # PSD lower frequency limit  [Hz]
+    >>> freq_upper = 20 # PSD upper frequency limit [Hz]
+    >>> freq_lower_mod = 1 # modulating signals's PSD lower frequency limit  [Hz]
+    >>> freq_upper_mod = 2 # modulating signals's PSD upper frequency limit [Hz]
 
     PSD of stationary and modulating signal
 
-    >>> PSD = es.get_psd(f, f_low = f_min, f_high = f_max) # one-sided flat-shaped PSD
-    >>> PSD_modulating = es.get_psd(f, f_low = f_min_mod, f_high = f_max_mod) # one-sided flat-shaped PSD
+    >>> PSD = es.get_psd(freq, freq_lower, freq_upper) # one-sided flat-shaped PSD
+    >>> PSD_modulating = es.get_psd(freq, freq_lower_mod, freq_upper_mod) # one-sided flat-shaped PSD
 
     Specify kurtosis and return non-stationary signal
 

@@ -16,11 +16,11 @@ t = np.arange(0, N) / fs  # time vector
 
 # define frequency vector and one-sided flat-shaped PSD
 M = N // 2 + 1  # number of data points of frequency vector
-f = np.arange(0, M, 1) * fs / N  # frequency vector
-f_min = 50  # PSD upper frequency limit  [Hz]
-f_max = 100  # PSD lower frequency limit [Hz]
-PSD = es.get_psd(f, f_min, f_max)  # one-sided flat-shaped PSD
-plt.plot(f, PSD)
+freq = np.arange(0, M, 1) * fs / N  # frequency vector
+freq_lower = 50  # PSD upper frequency limit  [Hz]
+freq_upper = 100  # PSD lower frequency limit [Hz]
+PSD = es.get_psd(freq, freq_lower, freq_upper)  # one-sided flat-shaped PSD
+plt.plot(freq, PSD)
 plt.xlabel('Frequency [Hz]')
 plt.ylabel('PSD [Unit**2/Hz]')
 plt.xlim(0, 200)
@@ -38,17 +38,16 @@ k_u_stationary = es.get_kurtosis(gaussian_signal)
 
 # get non-gaussian stationary signal, with kurtosis k_u=10
 k_u_target = 10
-rng = np.random.default_rng(seed)
+rg = np.random.default_rng(seed)
 nongaussian_signal = es.stationary_nongaussian_signal(N, PSD, fs, k_u=k_u_target, rg=rg)
 # calculate kurtosis
 k_u_stationary_nongaussian = es.get_kurtosis(nongaussian_signal)
 
 # get non-gaussian non-stationary signal, with kurtosis k_u=10
 # a) amplitude modulation, modulating signal defined by PSD
-rng = np.random.default_rng(seed)
-PSD_modulating = es.get_psd(f, f_low=1, f_high=k_u_target)
-plt.plot(f, PSD, label='PSD, carrier signal')
-plt.plot(f, PSD_modulating, label='PSD, modulating signal')
+PSD_modulating = es.get_psd(freq, freq_lower=1, freq_upper=10)
+plt.plot(freq, PSD, label='PSD, carrier signal')
+plt.plot(freq, PSD_modulating, label='PSD, modulating signal')
 plt.xlabel('Frequency [Hz]')
 plt.ylabel('PSD [Unit**2/Hz]')
 plt.xlim(0, 200)
