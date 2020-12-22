@@ -49,7 +49,7 @@ def normal_random(N, rg=None):
 
     Example
     --------
-    >>> import numy as np
+    >>> import numpy as np
     >>> import matplotlib.pyplot as plt
     >>> import pyExSi as es
 
@@ -84,7 +84,7 @@ def pseudo_random(N, rg=None):
 
     Example
     --------
-    >>> import numy as np
+    >>> import numpy as np
     >>> import matplotlib.pyplot as plt
     >>> import pyExSi as es
 
@@ -136,7 +136,7 @@ def burst_random(
 
     Example
     --------
-    >>> import numy as np
+    >>> import numpy as np
     >>> import matplotlib.pyplot as plt
     >>> import pyExSi as es
 
@@ -280,7 +280,7 @@ def impulse(N, n_start=0, width=None, amplitude=1.0, window='sine'):
 
     Example
     --------
-    >>> import numy as np
+    >>> import numpy as np
     >>> import matplotlib.pyplot as plt
     >>> import pyExSi as es
 
@@ -339,7 +339,7 @@ def get_psd(freq, freq_lower, freq_upper, variance=1):
 
     Example
     --------
-    >>> import numy as np
+    >>> import numpy as np
     >>> import matplotlib.pyplot as plt
     >>> import pyExSi as es
 
@@ -387,7 +387,7 @@ def random_gaussian(N, PSD, fs, rg=None):
 
     Example
     --------
-    >>> import numy as np
+    >>> import numpy as np
     >>> import matplotlib.pyplot as plt
     >>> import pyExSi as es
 
@@ -455,7 +455,7 @@ def stationary_nongaussian_signal(N, PSD, fs, s_k=0, k_u=3, mean=0, rg=None):
 
     Example
     --------
-    >>> import numy as np
+    >>> import numpy as np
     >>> import matplotlib.pyplot as plt
     >>> import pyExSi as es
 
@@ -697,7 +697,7 @@ def nonstationary_signal(
 
     Example
     --------
-    >>> import numy as np
+    >>> import numpy as np
     >>> import matplotlib.pyplot as plt
     >>> import pyExSi as es
 
