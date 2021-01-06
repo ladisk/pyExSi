@@ -104,7 +104,7 @@ def pseudo_random(N, rg=None):
             '`rg` must be initialized Generator object (numpy.random._generator.Generator)!'
         )
 
-    burst = np.fft.irfft(R_prand)
+    burst = np.fft.irfft(R_prand, n=N)
     return burst / np.max(np.abs(burst))
 
 
@@ -419,7 +419,7 @@ def random_gaussian(N, PSD, fs, rg=None):
             '`rg` must be initialized Generator object (numpy.random._generator.Generator)!'
         )
 
-    burst = np.fft.irfft(ampl_spectra_random)  # time signal
+    burst = np.fft.irfft(ampl_spectra_random, n=N)  # time signal
     return burst
 
 
@@ -592,10 +592,9 @@ def _get_nonstationary_signal_beta(N, PSD, fs, delta_n, alpha=1, beta=1, rg=None
     t_beta = np.copy(
         t[: n * delta_n + 1 : delta_n]
     )  # time vector for modulating signal, with step delta_n
-    t_beta = np.append(t_beta, t[-1])
-    if N % delta_n != 0:
-        n += 1
-    t_beta[-1] = t[-1]
+    if N % delta_n == 0:
+        t_beta = np.append(t_beta, t[-1])
+
 
     if rg == None:
         rg = np.random.default_rng()

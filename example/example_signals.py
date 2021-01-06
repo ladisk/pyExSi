@@ -58,8 +58,6 @@ plt.xlabel('Sample [n]')
 plt.ylabel('Random signal [Unit]')
 plt.legend()
 plt.show()
-print(uniform_random[:5])
-
 
 # burst random
 N = 1000
