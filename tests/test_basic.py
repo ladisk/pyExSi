@@ -177,6 +177,9 @@ def test_data_signals():
             results[key], results_ref[key], decimal=5, err_msg=f'Function: {key}'
         )
 
+    # pseudo random odd number
+    np.testing.assert_equal(len(es.pseudo_random(N=N+1, rg=rg)), N+1)
+
 
 if __name__ == "__main__":
     test_data_nonstationarity()
