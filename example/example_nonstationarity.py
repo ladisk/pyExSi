@@ -17,8 +17,8 @@ t = np.arange(0, N) / fs  # time vector
 # define frequency vector and one-sided flat-shaped PSD
 M = N // 2 + 1  # number of data points of frequency vector
 freq = np.arange(0, M, 1) * fs / N  # frequency vector
-freq_lower = 50  # PSD upper frequency limit  [Hz]
-freq_upper = 100  # PSD lower frequency limit [Hz]
+freq_lower = 50  # PSD lower frequency limit  [Hz]
+freq_upper = 100  # PSD upper frequency limit [Hz]
 PSD = es.get_psd(freq, freq_lower, freq_upper)  # one-sided flat-shaped PSD
 plt.plot(freq, PSD)
 plt.xlabel('Frequency [Hz]')
@@ -29,7 +29,7 @@ plt.show()
 
 # Random Generator seed
 seed = 1234
-rg = np.random.default_rng(seed)  # or rng = np.random.default_rng(seed)
+rg = np.random.default_rng(seed)
 
 # get gaussian stationary signal
 gaussian_signal = es.random_gaussian(N, PSD, fs, rg=rg)
