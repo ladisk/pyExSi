@@ -258,7 +258,7 @@ def _sweep_rate(T, freq_start, freq_stop, mode='linear'):
     if mode == 'linear':
         sweep_rate = (freq_stop - freq_start) / T  # Hz/s
     elif mode == 'logarithmic':
-        sweep_rate = np.log(freq_stop / freq_start) * (60 / T / np.log(2))  # octaves/min
+        sweep_rate =  (60 / T / np.log(2)) * np.log(freq_stop / freq_start)  # octaves/min
     else:
         raise ValueError('Invalid sweep mode `{mode}`.')
     return sweep_rate
