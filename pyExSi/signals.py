@@ -258,7 +258,7 @@ def _sweep_rate(T, freq_start, freq_stop, mode='linear'):
     if mode == 'linear':
         sweep_rate = (freq_stop - freq_start) / T  # Hz/s
     elif mode == 'logarithmic':
-        sweep_rate = np.log((freq_stop / freq_start) ** (60 / T / np.log(2)))  # octaves/min
+        sweep_rate = np.log(freq_stop / freq_start) * (60 / T / np.log(2))  # octaves/min
     else:
         raise ValueError('Invalid sweep mode `{mode}`.')
     return sweep_rate
@@ -828,6 +828,6 @@ def get_kurtosis(signal):
 
 
 if __name__ == "__main__":
-    time = np.linspace(0, 1, 100)
-    a = sine_sweep(time=time, sweep_rate=1)
-    print(a)
+    time = np.arange(1000)/10000 
+    burst = sine_sweep(time=time, freq_start=3000, freq_stop=15000, mode='logarithmic')
+    print(burst)
