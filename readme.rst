@@ -55,7 +55,9 @@ A simple example on how to generate random signals on PSD basis:
 
 |DOI|
 |Build Status|
-
+|Docs Status|
+.. |Docs Status| image:: https://readthedocs.org/projects/pyexsi/badge/
+   :target: https://pyexsi.readthedocs.io
 .. |Build Status| image:: https://travis-ci.com/ladisk/pyExSi.svg?branch=main
    :target: https://travis-ci.com/ladisk/pyExSi
 .. |DOI| image:: https://zenodo.org/badge/DOI/10.5281/zenodo.4431844.svg
