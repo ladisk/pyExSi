@@ -53,12 +53,13 @@ A simple example on how to generate random signals on PSD basis:
     #get signal 
     nongaussian_nonstationary_signal = es.nonstationary_signal(N,PSD,fs,k_u=5,modulating_signal=('PSD', PSD_modulating),param1_list=p_list,param2_list=delta_m_list)
 
-|DOI|
-|Build Status|
-|Docs Status|
+|DOI| |Build Status| |Docs Status|
+
 .. |Docs Status| image:: https://readthedocs.org/projects/pyexsi/badge/
    :target: https://pyexsi.readthedocs.io
+   
 .. |Build Status| image:: https://travis-ci.com/ladisk/pyExSi.svg?branch=main
    :target: https://travis-ci.com/ladisk/pyExSi
+   
 .. |DOI| image:: https://zenodo.org/badge/DOI/10.5281/zenodo.4431844.svg
    :target: https://doi.org/10.5281/zenodo.4431844
