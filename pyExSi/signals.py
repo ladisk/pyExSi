@@ -183,7 +183,8 @@ def burst_random(
 
 
 def sine_sweep(
-    time, phi=0, freq_start=1, sweep_rate=None, freq_stop=None, mode='linear', phi_end=False
+    time, phi=0, freq_start=1, sweep_rate=None, freq_stop=None, 
+    mode='linear', phi_end=False, freq_return=False
 ):
     """
     Generate a sine sweep signal time series.
@@ -201,6 +202,9 @@ def sine_sweep(
     :param phi_end: If True, return (`sweep_sine`, `phi_end`), where
        `phi_end` is the end phase which can be used as `phi` if this
        function is called for another sweep.
+       Defaults to False.
+    :param freq_return: If True, return (`sweep_sine`, `phi_end`, `freq`), where
+       `freq` is the frequency array.
        Defaults to False.
     :returns: array of shape (N,), the generated sine sweep signal
 
@@ -221,7 +225,7 @@ def sine_sweep(
             sweep_rate = _sweep_rate(T, freq_start, freq_stop, mode)
         else:
             raise ValueError('`sweep_rate` is not given, please supply `freq_stop`.')
-    if phi_end:
+    if phi_end or freq_return:
         # prepare time
         time_ = np.zeros(len(time) + 1)
         time_[: len(time)] = time
@@ -242,9 +246,24 @@ def sine_sweep(
         )
     else:
         raise ValueError(f"Invalid sweep mode `mode`='{mode}'.")
+    
+    if freq_return:
+        if mode == 'linear':
+            freq = (sweep_rate * 0.5 * time_ * 2 + freq_start)
+        elif mode == 'logarithmic':
+            freq = (
+                    60
+                    * freq_start
+                    / (sweep_rate * np.log(2))
+                    * (2 ** (sweep_rate * time_ / 60) * (sweep_rate / 60) * np.log(2))
+                    )
+        else:
+            raise ValueError(f"Invalid sweep mode `mode`='{mode}'.")
 
     s = np.sin(phase_t + phi)
-    if phi_end:
+    if freq_return:
+        return s[:-1], phase_t[-1], freq[:-1]
+    elif phi_end:
         return s[:-1], phase_t[-1]
     else:
         return s
