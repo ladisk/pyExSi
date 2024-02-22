@@ -1,3 +1,5 @@
+|DOI| |Build Status| |Docs Status|
+
 pyExSi - Excitation signals as used in structural dynamics and vibration fatigue
 --------------------------------------------------------------------------------
 Supported excitation signals are:
@@ -52,8 +54,6 @@ A simple example on how to generate random signals on PSD basis:
     p_list = np.arange(.1,2.1,.5)
     #get signal 
     nongaussian_nonstationary_signal = es.nonstationary_signal(N,PSD,fs,k_u=5,modulating_signal=('PSD', PSD_modulating),param1_list=p_list,param2_list=delta_m_list)
-
-|DOI| |Build Status| |Docs Status|
 
 .. |Docs Status| image:: https://readthedocs.org/projects/pyexsi/badge/
    :target: https://pyexsi.readthedocs.io
