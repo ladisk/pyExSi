@@ -1,0 +1,45 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "pyExSi"
+version = "0.43"
+authors = [{name = "Aleš Zorman, Domen Gorjup, Janko Slavič", email = "janko.slavic@fs.uni-lj.si"}]
+maintainers = [{name = "Janko Slavič, Domen Gorjup, Aleš Zorman", email = "janko.slavic@fs.uni-lj.si"}]
+license = "MIT"
+description = "Excitation signals as used in structural dynamics and vibration fatigue."
+readme = "README.rst"
+keywords = ["excitation signal", "structural dynamics", "dynamic testing"]
+requires-python = ">=3.10"
+dependencies = [
+    "numpy>=1.18",
+    "scipy",
+    "pylint",
+    "pytest",
+]
+classifiers = [
+    'Development Status :: 3 - Alpha',
+    'Intended Audience :: Developers',
+    'Topic :: Scientific/Engineering',
+    'Programming Language :: Python :: 3.10',
+    "License :: OSI Approved :: MIT License",
+]
+
+[project.optional-dependencies]
+dev = [
+    "sphinx",
+    "twine",
+    "wheel",
+    "pytest",
+    "build",
+    "sphinx-rtd-theme",
+    "matplotlib",
+    "sphinx-copybutton>=0.5.2",
+    "black",
+]
+
+[project.urls]
+homepage = "https://github.com/ladisk/pyExSi"
+documentation = "https://pyexsi.readthedocs.io/en/latest/index.html"
+source = "https://github.com/sdypy/pyExSi"
