@@ -11,6 +11,7 @@ Welcome to the pyExSi project's documentation!
    :caption: Contents:
 
    getting_started
+   examples
    code
 
 
