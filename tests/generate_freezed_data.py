@@ -114,7 +114,7 @@ def get_nonstationarity_data(show=False):
     if show:
         t_indx = np.logical_and(t >= 0, t < 10)
         plt.figure(figsize=(15, 5))
-        plt.plot(t[t_indx], gausian_signal[t_indx], label='gaussian')
+        # plt.plot(t[t_indx], gausian_signal[t_indx], label='gaussian')
         plt.plot(t[t_indx], nongausian_signal[t_indx], label='non-gaussian stationary')
         plt.plot(
             t[t_indx],
