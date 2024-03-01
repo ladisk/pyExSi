@@ -7,3 +7,4 @@ pytest
 sphinx-rtd-theme
 matplotlib
 black
+pylint

@@ -1,4 +1,2 @@
 numpy>=1.18
 scipy
-pylint
-pytest
