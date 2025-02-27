@@ -74,13 +74,15 @@ def pseudo_random(N, rg=None):
     """
     Pseudorandom distribution.
 
-    Magnitudes are 1, phase is random.
+    Generated random data has amplitude spectrum of magnuted 1 and 
+    uniformly distributed phase.
 
     :param N: Number of points.
     :type N: int
     :param rg: Initialized Generator object
     :type rg: numpy.random._generator.Generator
-    :returns: Random samples from the “standard normal” distribution
+    :returns: Random samples with amplitude spectrum of magnuted 1 and 
+              uniformly distributed phase.
 
     Example
     --------
