@@ -44,7 +44,7 @@ A simple example on how to generate random signals on PSD basis:
     PSD = es.get_psd(freq, freq_lower, freq_upper) # one-sided flat-shaped PSD
 
     #get gaussian stationary signal
-    gausian_signal = es.random_gaussian((N, PSD, fs)
+    gausian_signal = es.random_gaussian(N, PSD, fs)
 
     #get non-gaussian non-stationary signal, with kurtosis k_u=10
     #amplitude modulation, modulating signal defined by PSD
