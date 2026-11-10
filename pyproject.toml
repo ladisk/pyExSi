@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "pyExSi"
-version = "0.43.3"
+version = "0.43.4"
 authors = [{name = "Aleš Zorman, Domen Gorjup, Janko Slavič", email = "janko.slavic@fs.uni-lj.si"}]
 maintainers = [{name = "Janko Slavič, Domen Gorjup, Aleš Zorman", email = "janko.slavic@fs.uni-lj.si"}]
 license = "MIT"
@@ -15,8 +15,6 @@ requires-python = ">=3.13"
 dependencies = [
     "numpy>=1.18",
     "scipy",
-    "pylint",
-    "pytest",
 ]
 classifiers = [
     'Development Status :: 3 - Alpha',
@@ -39,9 +37,10 @@ dev = [
     "matplotlib",
     "sphinx-copybutton>=0.5.2",
     "black",
+    "pylint",
 ]
 
 [project.urls]
 homepage = "https://github.com/ladisk/pyExSi"
 documentation = "https://pyexsi.readthedocs.io/en/latest/index.html"
-source = "https://github.com/sdypy/pyExSi"
+source = "https://github.com/ladisk/pyExSi"
