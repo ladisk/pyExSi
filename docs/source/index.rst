@@ -6,6 +6,9 @@
 Welcome to the pyExSi project's documentation!
 ===============================================================
 
+pyExSi is a port of `sdypy-excitation <https://github.com/sdypy/sdypy-excitation>`_,
+where the code is maintained.
+
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
