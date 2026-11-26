@@ -4,7 +4,7 @@ pyExSi is a port of sdypy-excitation (https://github.com/sdypy/sdypy-excitation)
 where the code is maintained. This package re-exports sdypy.excitation.signals
 under the pyExSi name.
 """
-__version__ = '0.43.4'
+__version__ = '0.44.0'
 
 import sys as _sys
 
