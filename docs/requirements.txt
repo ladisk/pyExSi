@@ -1,3 +1,5 @@
-pyExSi
+sdypy-excitation==0.44.0
+matplotlib
 sphinx-rtd-theme
 sphinx-copybutton
+pyExSi

@@ -1,2 +1,2 @@
-numpy>=1.18
-scipy
+sdypy-excitation==0.44.0
+pytest

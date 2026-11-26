@@ -8,13 +8,12 @@ version = "0.43.4"
 authors = [{name = "Aleš Zorman, Domen Gorjup, Janko Slavič", email = "janko.slavic@fs.uni-lj.si"}]
 maintainers = [{name = "Janko Slavič, Domen Gorjup, Aleš Zorman", email = "janko.slavic@fs.uni-lj.si"}]
 license = "MIT"
-description = "Excitation signals as used in structural dynamics and vibration fatigue."
+description = "Excitation signals as used in structural dynamics and vibration fatigue (port of sdypy-excitation)."
 readme = "readme.rst"
 keywords = ["excitation signal", "structural dynamics", "dynamic testing"]
 requires-python = ">=3.13"
 dependencies = [
-    "numpy>=1.18",
-    "scipy",
+    "sdypy-excitation==0.44.0",
 ]
 classifiers = [
     'Development Status :: 3 - Alpha',
@@ -43,4 +42,5 @@ dev = [
 [project.urls]
 homepage = "https://github.com/ladisk/pyExSi"
 documentation = "https://pyexsi.readthedocs.io/en/latest/index.html"
-source = "https://github.com/ladisk/pyExSi"
+source = "https://github.com/sdypy/sdypy-excitation"
+issues = "https://github.com/sdypy/sdypy-excitation/issues"

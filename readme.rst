@@ -2,6 +2,22 @@
 
 pyExSi - Excitation signals as used in structural dynamics and vibration fatigue
 --------------------------------------------------------------------------------
+``pyExSi`` is a port of `sdypy-excitation`_, which is part of the `SDyPy`_ project. The code is
+maintained in ``sdypy-excitation``; this package makes the same code available under the
+``pyExSi`` name, so that existing code keeps working.
+
+**Please report issues and open pull requests at** `sdypy-excitation`_.
+
+Installing ``pyExSi`` also installs ``sdypy-excitation``. For new code, use it directly:
+
+.. code:: cmd
+
+   pip install sdypy-excitation
+
+.. code:: python
+
+   from sdypy.excitation import random_gaussian
+
 Supported excitation signals are:
 
 - pulse (e.g. half-sine)
@@ -58,6 +74,8 @@ A simple example on how to generate random signals on PSD basis:
 .. |Docs Status| image:: https://readthedocs.org/projects/pyexsi/badge/
    :target: https://pyexsi.readthedocs.io
 
+.. _sdypy-excitation: https://github.com/sdypy/sdypy-excitation
+.. _SDyPy: https://github.com/sdypy
 .. |pytest| image:: https://github.com/ladisk/pyExSi/actions/workflows/python-package.yml/badge.svg
     :target: https://github.com/ladisk/pyExSi/actions
    
